@@ -1,9 +1,54 @@
 {
+  "name": "atsen-fullstack",
+  "version": "1.0.0",
+  "description": "ATSEN - A full-stack educational platform with React frontend and Express backend",
+  "type": "module",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "dev": "concurrently -n \"backend,frontend\" -c \"green,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start": "node backend/src/server.js",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install",
+    "postbuild": "cp -r frontend/dist backend/public || xcopy frontend\\dist backend\\public /E /I",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "digitalocean-build": "npm run install:all && npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "education",
+    "learning",
+    "fullstack",
+    "react",
+    "express",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "ATSEN Team",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "lodash.debounce": "^4.0.8",
     "slugify": "^1.6.6"
-  }
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsmefuad/ATSEN.git"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
 }

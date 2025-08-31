@@ -3,6 +3,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { connectDB } from "./config/db.js";
 import rateLimiter from "./middlewares/rateLimiter.js";
@@ -31,10 +36,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// enable CORS for all origins
+// enable CORS - more restrictive in production
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.FRONTEND_URL, process.env.DEPLOY_URL].filter(Boolean)
+      : "*",
     credentials: false,
   })
 );
@@ -117,6 +124,17 @@ app.use("/api/documents", documentRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/institution-announcements", institutionAnnouncementRoutes);
+
+// Serve static files from React build in production
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React build
+  app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+  
+  // Handle React routing - send all non-API requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+  });
+}
 
 // connect to DB, then start the server
 connectDB().then(() => {
