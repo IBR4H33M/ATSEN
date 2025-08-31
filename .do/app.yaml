@@ -11,8 +11,17 @@ services:
   instance_count: 1
   instance_size_slug: basic-xxs
   http_port: 5001
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 60
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3
   envs:
   - key: NODE_ENV
     value: production
   - key: PORT
     value: "5001"
+  - key: HOST
+    value: "0.0.0.0"
