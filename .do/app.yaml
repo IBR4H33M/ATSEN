@@ -3,16 +3,16 @@ services:
 - name: web
   source_dir: /
   github:
-    repo: itsmefuad/ATSEN
+    repo: IBR4H33M/ATSEN
     branch: main
   run_command: npm start
   build_command: npm run digitalocean-build
   environment_slug: node-js
   instance_count: 1
   instance_size_slug: basic-xxs
-  http_port: 8080
+  http_port: 5001
   envs:
   - key: NODE_ENV
     value: production
   - key: PORT
-    value: "8080"
+    value: "5001"
