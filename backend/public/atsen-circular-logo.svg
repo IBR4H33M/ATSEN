@@ -1,0 +1,38 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="circularGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="innerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer circle with gradient -->
+  <circle cx="20" cy="20" r="19" 
+          fill="url(#circularGradient)" 
+          stroke="#1e40af" 
+          stroke-width="1"/>
+  
+  <!-- Inner circle for depth -->
+  <circle cx="20" cy="20" r="15" 
+          fill="url(#innerGradient)" 
+          opacity="0.3"/>
+  
+  <!-- ATSEN text -->
+  <text x="20" y="24" 
+        font-family="Arial, sans-serif" 
+        font-size="8" 
+        font-weight="bold" 
+        text-anchor="middle" 
+        fill="white"
+        letter-spacing="0.5">ATSEN</text>
+  
+  <!-- Subtle highlight -->
+  <circle cx="15" cy="15" r="2" 
+          fill="white" 
+          opacity="0.3"/>
+</svg>
