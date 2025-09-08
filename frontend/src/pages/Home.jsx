@@ -91,7 +91,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-lg text-gray-200 mt-4 font-light animate-fade-in-delayed-2">
-                  Complete Learning Management System (LMS) for schools, colleges, and universities. Streamline student enrollment, course management, and academic administration.
+                  The comprehensive Learning Management System (LMS) for schools, colleges, and universities. Streamline student enrollment, course management, and academic administration.
                 </p>
                 
                 {/* Register Institution Button - Show for non-logged-in users */}
