@@ -4,7 +4,7 @@
   "description": "ATSEN - Educational Platform",
   "main": "backend/src/server.js",
   "scripts": {
-    "build": "node fix-production-env.js && cd frontend && npm ci --include=dev && NODE_ENV=production npm run build && cd ../backend && npm ci --omit=dev",
+    "build": "cd frontend && npm ci --include=dev && NODE_ENV=production npm run build && cd ../backend && npm ci --omit=dev",
     "build:clean": "node -e \"const fs = require('fs'); const path = require('path'); const dir = path.join(__dirname, 'backend', 'public', 'assets'); if (fs.existsSync(dir)) fs.rmSync(dir, {recursive: true, force: true}); const html = path.join(__dirname, 'backend', 'public', 'index.html'); if (fs.existsSync(html)) fs.unlinkSync(html);\" && npm run build",
     "start": "cd backend && npm start",
     "dev": "cd backend && npm run dev:all",
