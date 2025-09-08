@@ -32,7 +32,7 @@ export default function Home() {
         <div className="relative">
           <div className="w-full">
             <img 
-              src="/BlueHomeAbstract.jpg" 
+              src="/BlueHomeAbstract.webp" 
               alt="ATSEN Platform" 
               className="w-full h-[70vh] object-cover object-center"
             />
@@ -71,7 +71,7 @@ export default function Home() {
         {/* Full Width Image */}
         <div className="w-full">
           <img 
-            src="/BlueHomeAbstract.jpg" 
+            src="/BlueHomeAbstract.webp" 
             alt="ATSEN Platform" 
             className="w-full h-[70vh] object-cover object-center"
           />
