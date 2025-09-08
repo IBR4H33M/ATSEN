@@ -86,7 +86,6 @@ export default function Home() {
             <div className={user ? "flex-1" : "flex-1 pr-8"}>
               <div className="animate-fade-in-up">
                 <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                  Educational Management Platform{" "}
                   <span className="text-blue-400 font-extrabold">
                     ATSEN
                   </span>
@@ -139,10 +138,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-base-content mb-4">
-              Learning Management System for Educational Institutions
+              What is ATSEN?
             </h2>
             <p className="text-xl text-base-content/70 max-w-3xl mx-auto">
-              Complete Student Information System (SIS) and Learning Management System (LMS) for educational institutions, schools, and universities
+              ATSEN is a comprehensive Student Information System (SIS) and Learning Management System (LMS) for educational institutions, schools, and universities
             </p>
           </div>
 
