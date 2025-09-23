@@ -59,6 +59,23 @@ app.use(
 // parse JSON bodies
 app.use(express.json());
 
+// URL canonicalization middleware
+app.use((req, res, next) => {
+  const host = req.get('host');
+  
+  // Redirect www to non-www
+  if (host && host.startsWith('www.')) {
+    return res.redirect(301, `https://${host.slice(4)}${req.originalUrl}`);
+  }
+  
+  // Remove trailing slash (except root)
+  if (req.path.length > 1 && req.path.endsWith('/')) {
+    return res.redirect(301, req.path.slice(0, -1));
+  }
+  
+  next();
+});
+
 // Add request logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
