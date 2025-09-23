@@ -7,27 +7,21 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://atsen.app/login</loc>
+    <loc>https://atsen.app/auth/login</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://atsen.app/signup</loc>
+    <loc>https://atsen.app/auth/signup</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://atsen.app/institution/register</loc>
+    <loc>https://atsen.app/auth/institution-register</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://atsen.app/help</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>
 </urlset>
