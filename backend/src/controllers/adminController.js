@@ -110,6 +110,17 @@ export async function approveInstitution(req, res) {
       }) + '-' + Date.now()
     };
 
+    // Set initial admins: first email becomes master admin
+    const primaryEmail = (pendingInstitute.emails && pendingInstitute.emails.length > 0)
+      ? pendingInstitute.emails[0]
+      : null;
+
+    if (primaryEmail) {
+      institutionData.admins = [
+        { email: primaryEmail, name: pendingInstitute.name + ' Admin', role: 'master' }
+      ];
+    }
+
     // Create the institution and save (this will trigger the slug generation)
     const institution = new Institution(institutionData);
     
@@ -137,6 +148,24 @@ export async function approveInstitution(req, res) {
         slug: institution.slug
       }
     });
+
+    // Optionally create a global Admin account for the master institution admin
+    try {
+      if (primaryEmail) {
+        const AdminModel = (await import('../models/Admin.js')).default;
+        const existing = await AdminModel.findOne({ email: primaryEmail });
+        if (!existing) {
+          await AdminModel.create({
+            name: pendingInstitute.name + ' Admin',
+            email: primaryEmail,
+            password: 'pass1234',
+            role: 'admin'
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed creating global admin for institution master:', err?.message || err);
+    }
 
   } catch (error) {
     console.error("Error approving institution:", error);

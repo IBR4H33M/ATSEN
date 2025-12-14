@@ -121,15 +121,33 @@ export default function I_Dashboard() {
       </div>
     );
 
+  // Compute master admin email for access control button
+  const masterEmail = (data.admins && data.admins.find(a => a.role === 'master') && data.admins.find(a => a.role === 'master').email)
+    || (data.emails && data.emails[0])
+    || data.email
+    || null;
+
   return (
     <div className="max-w-7xl mx-auto p-4 mt-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-base-content mb-2">
-          {data.name} Dashboard
-        </h1>
-        <p className="text-base-content/70">
-          Manage your institution's resources and data
-        </p>
+      <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-base-content mb-2">
+            {data.name} Dashboard
+          </h1>
+          <p className="text-base-content/70">
+            Manage your institution's resources and data
+          </p>
+        </div>
+        {/* Access Control Button (right aligned) */}
+        {user?.email && masterEmail && user.email.toLowerCase() === masterEmail.toLowerCase() && (
+          <Link
+            to={`/${encodeURIComponent(idOrName)}/access-control`}
+            className="btn btn-accent flex items-center justify-center px-6 py-3 font-medium group self-start md:self-auto"
+          >
+            <Settings className="h-5 w-5 mr-2" />
+            Manage Access Control
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -194,23 +212,23 @@ export default function I_Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-room`}
-            className="btn btn-primary flex items-center justify-center px-6 py-4 font-medium group"
+            className="btn btn-primary min-w-[100px]"
           >
-            <Plus className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+            <Plus className="h-5 w-5 mr-2" />
             Add Room
           </Link>
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-student`}
-            className="btn btn-success flex items-center justify-center px-6 py-4 font-medium group"
+            className="btn btn-outline min-w-[100px]"
           >
-            <UserPlus className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+            <UserPlus className="h-5 w-5 mr-2" />
             Add Student
           </Link>
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-instructor`}
-            className="btn btn-secondary flex items-center justify-center px-6 py-4 font-medium group"
+            className="btn btn-outline min-w-[100px]"
           >
-            <Users className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+            <Users className="h-5 w-5 mr-2" />
             Add Instructor
           </Link>
         </div>

@@ -78,6 +78,16 @@ const institutionSchema = new mongoose.Schema(
         ref: "StudentDocument"
       }
     ]
+    ,
+    // Institution-level admins (institution-specific accounts)
+    admins: [
+      {
+        email: { type: String, required: true, lowercase: true, trim: true },
+        name: { type: String, trim: true },
+        role: { type: String, enum: ["master", "admin"], default: "admin" },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ]
   },
   {
     collection: "institutions",

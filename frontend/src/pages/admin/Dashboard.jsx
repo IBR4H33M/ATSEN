@@ -234,14 +234,14 @@ export default function Dashboard() {
                           <div className="flex flex-col space-y-3 ml-4">
                             <button
                               onClick={() => handleApprove(pending._id)}
-                              className="btn btn-success hover:btn-success text-white font-medium shadow-md hover:shadow-lg min-w-[100px]"
+                              className="btn btn-primary min-w-[100px]"
                             >
                               <CheckCircle className="h-4 w-4 mr-1" />
                               Approve
                             </button>
                             <button
                               onClick={() => handleReject(pending._id)}
-                              className="btn btn-error hover:btn-error text-white font-medium shadow-md hover:shadow-lg min-w-[100px]"
+                              className="btn btn-outline min-w-[100px]"
                             >
                               <XCircle className="h-4 w-4 mr-1" />
                               Reject

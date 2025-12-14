@@ -12,6 +12,9 @@ import {
   getInstitutionDashboard
 } from "../controllers/institution/dashboardController.js";
 
+import { getAccessControl, addAdmin } from "../controllers/institution/accessController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+
 // People management
 import {
   getInstitutionInstructors,
@@ -49,6 +52,10 @@ router.get("/:idOrName/dashboard", getInstitutionDashboard);
 
 // Update institution settings
 router.put("/:idOrName/settings", updateInstitutionSettings);
+
+// Access control - list and add admins (master only)
+router.get("/:idOrName/access-control", authMiddleware, getAccessControl);
+router.post("/:idOrName/access-control", authMiddleware, addAdmin);
 
 router.post("/:idOrName/add-student", addStudent);
 router.post("/:idOrName/remove-student", removeStudent);

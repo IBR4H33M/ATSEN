@@ -26,6 +26,7 @@ import AddInstructor from "./pages/institution/AddInstructor.jsx";
 import StudentList from "./pages/institution/StudentList.jsx";
 import InstructorList from "./pages/institution/InstructorList.jsx";
 import InstitutionSettings from "./pages/institution/InstitutionSettings.jsx";
+import AccessControl from "./pages/institution/AccessControl.jsx";
 import AddStudent from "./pages/institution/AddStudent";
 import EditRoom from "./pages/institution/EditRoom.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -123,6 +124,7 @@ export default function App() {
 
             {/* Settings */}
             <Route path="settings" element={<InstitutionSettings />} />
+            <Route path="access-control" element={<AccessControl />} />
 
             {/* Document Desk */}
             <Route path="document-desk" element={<DocumentDesk />} />
