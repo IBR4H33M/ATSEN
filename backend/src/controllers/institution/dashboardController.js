@@ -39,7 +39,7 @@ export async function getInstitutionDashboard(req, res) {
       _id:             institution._id,
       name:            institution.name,
       eiin:            institution.eiin,
-      email:           institution.email,
+      email:           (institution.emails && institution.emails.length > 0) ? institution.emails[0] : null,
       phone:           institution.phone,
       address:         institution.address,
       description:     institution.description,

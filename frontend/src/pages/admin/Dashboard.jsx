@@ -199,8 +199,8 @@ export default function Dashboard() {
                                 </span>
                               </div>
                               <div>
-                                <span className="font-medium text-base-content/80">Email:</span>
-                                <span className="ml-2 text-base-content/70">{pending.email}</span>
+                                <span className="font-medium text-base-content/80">Email(s):</span>
+                                <span className="ml-2 text-base-content/70">{(pending.emails || []).join(', ')}</span>
                               </div>
                               {pending.phone && (
                                 <div>
@@ -308,7 +308,7 @@ export default function Dashboard() {
                           <div className="flex items-center">
                             <span className="font-medium text-base-content/80 min-w-[50px]">Email:</span>
                             <span className="ml-2 text-base-content/70 truncate">
-                              {institution.email}
+                              {(institution.emails && institution.emails.length > 0) ? institution.emails[0] : ''}
                             </span>
                           </div>
                           <div className="flex items-center">

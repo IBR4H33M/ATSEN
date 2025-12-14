@@ -18,11 +18,13 @@ const institutionSchema = new mongoose.Schema(
       trim: true,
       uppercase: true
     },
-    email: {
-      type: String,
+    // allow multiple admin/login emails per institution
+    emails: {
+      type: [String],
       required: true,
-      trim: true,
-      lowercase: true
+      validate: [(val) => Array.isArray(val) && val.length > 0, 'At least one email is required'],
+      lowercase: true,
+      trim: true
     },
     password: {
       type: String,
@@ -82,6 +84,9 @@ const institutionSchema = new mongoose.Schema(
     timestamps: true // auto-manages createdAt & updatedAt
   }
 );
+
+  // Ensure unique index on each email across institutions
+  institutionSchema.index({ emails: 1 }, { unique: true, sparse: true });
 
 // Auto-generate a URL-safe slug from the institution name
 institutionSchema.pre("validate", async function () {

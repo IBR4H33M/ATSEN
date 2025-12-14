@@ -39,14 +39,15 @@ export async function registerInstitution(req, res) {
 
   try {
     // Check if institution already exists (approved) or is pending
-    const existingInstitution = await Institution.findOne({ $or: [{ eiin }, { email }] });
+    const emailNormalized = email.toLowerCase().trim();
+    const existingInstitution = await Institution.findOne({ $or: [{ eiin }, { emails: emailNormalized }] });
     if (existingInstitution) {
       return res.status(409).json({
         message: "Institution with same EIIN or Email already exists."
       });
     }
 
-    const existingPending = await PendingInstitute.findOne({ $or: [{ eiin }, { email }] });
+    const existingPending = await PendingInstitute.findOne({ $or: [{ eiin }, { emails: emailNormalized }] });
     if (existingPending) {
       return res.status(409).json({
         message: "Registration request with same EIIN or Email is already pending approval."
@@ -57,7 +58,7 @@ export async function registerInstitution(req, res) {
     const pendingInstitute = await PendingInstitute.create({
       name,
       eiin: eiin.toUpperCase().trim(),
-      email: email.toLowerCase().trim(),
+      emails: [emailNormalized],
       password, // Will be hashed by the model's pre-save hook
       phone,
       address,
@@ -80,7 +81,8 @@ export async function loginInstitution(req, res) {
   const { email, password } = req.body;
 
   try {
-    const inst = await Institution.findOne({ email });
+    const emailNormalized = email.toLowerCase().trim();
+    const inst = await Institution.findOne({ emails: emailNormalized });
     if (!inst) {
       return res.status(401).json({ message: "Invalid credentials." });
     }

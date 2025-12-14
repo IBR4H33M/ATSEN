@@ -62,7 +62,7 @@ export async function loginAdmin(req, res) {
 export async function getPendingInstitutions(req, res) {
   try {
     const pendingInstitutes = await PendingInstitute.find({ status: 'pending' })
-      .select('name eiin email phone address description createdAt')
+      .select('name eiin emails phone address description createdAt')
       .sort({ createdAt: -1 });
     
     res.json(pendingInstitutes);
@@ -97,7 +97,7 @@ export async function approveInstitution(req, res) {
     const institutionData = {
       name: pendingInstitute.name,
       eiin: pendingInstitute.eiin,
-      email: pendingInstitute.email,
+      emails: pendingInstitute.emails || [],
       password: pendingInstitute.password, // Already hashed
       phone: pendingInstitute.phone,
       address: pendingInstitute.address,
@@ -133,7 +133,7 @@ export async function approveInstitution(req, res) {
         id: institution._id,
         name: institution.name,
         eiin: institution.eiin,
-        email: institution.email,
+        emails: institution.emails,
         slug: institution.slug
       }
     });
@@ -184,7 +184,7 @@ export async function rejectInstitution(req, res) {
 export async function getAllInstitutions(req, res) {
   try {
     const institutions = await Institution.find({})
-      .select('name eiin email active createdAt')
+      .select('name eiin emails active createdAt')
       .sort({ createdAt: -1 });
     
     res.json(institutions);

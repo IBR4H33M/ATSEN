@@ -22,8 +22,9 @@ export const universalLogin = async (req, res) => {
     let role = null;
     let userData = null;
 
-    // Check in institutions first
-    const institution = await Institution.findOne({ email });
+    // Check in institutions first (emails is an array)
+    const emailNormalized = email.toLowerCase().trim();
+    const institution = await Institution.findOne({ emails: emailNormalized });
     if (institution) {
       const isValidPassword = await bcrypt.compare(password, institution.password);
       if (isValidPassword) {
@@ -32,7 +33,7 @@ export const universalLogin = async (req, res) => {
         userData = {
           _id: institution._id,
           name: institution.name,
-          email: institution.email,
+          email: emailNormalized,
           slug: institution.slug,
           eiin: institution.eiin,
           phone: institution.phone,
@@ -86,7 +87,7 @@ export const universalLogin = async (req, res) => {
       { 
         id: user._id, 
         role,
-        email: user.email 
+        email: emailNormalized || user.email 
       },
       JWT_SECRET,
       { expiresIn: "7d" }

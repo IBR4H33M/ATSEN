@@ -46,10 +46,10 @@ const InstitutionCard = ({ institution, onRequestSuccess }) => {
         <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-500">
-              {institution.email && (
-                <span>{institution.email}</span>
-              )}
-            </div>
+                {(institution.emails && institution.emails.length > 0) && (
+                  <span>{institution.emails[0]}</span>
+                )}
+              </div>
           </div>
           
           <div className="flex gap-2">

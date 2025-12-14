@@ -85,9 +85,9 @@ export default function Home() {
             {/* Left Section */}
             <div className={user ? "flex-1" : "flex-1 pr-8"}>
               <div className="animate-fade-in-up">
-                <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                  <span className="text-blue-400 font-extrabold">
-                    ATSEN
+                <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" style={{fontFamily: 'Consolas, monospace'}}>
+                  <span className="text-white font-extrabold" style={{fontFamily: 'Consolas, monospace'}}>
+                    Welcome to ATSEN
                   </span>
                 </h1>
                 <p className="text-lg text-gray-200 mt-4 font-light animate-fade-in-delayed-2">

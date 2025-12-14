@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../lib/axios";
 import Navbar from "../../components/Navbar.jsx";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, HelpCircle } from "lucide-react";
 
 export default function InstitutionRegistration() {
   const [form, setForm] = useState({});
@@ -124,14 +124,16 @@ export default function InstitutionRegistration() {
               value={form.eiin || ""}
               onChange={handleChange}
               placeholder="e.g., 123456"
+              hint="This is the unique government provided institution identification number. We will use this number to verify your institution name and to ensure multiple institution accounts dont exist"
             />
             <Input
               name="email"
-              label="Official Email"
+              label="Admin Email"
               type="email"
               value={form.email || ""}
               onChange={handleChange}
-              placeholder="e.g., admin@abcuniversity.edu"
+              placeholder="e.g., admin@yourinstitution.edu"
+              hint="This email will have the master admin access for your institution"
             />
             <Input
               name="phone"
@@ -216,11 +218,42 @@ export default function InstitutionRegistration() {
 }
 
 // Extracted Input component
-function Input({ name, label, type = "text", onChange, value = "", placeholder = "" }) {
+function Input({ name, label, type = "text", onChange, value = "", placeholder = "", hint }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [iconHover, setIconHover] = useState(false);
+  const [tooltipHover, setTooltipHover] = useState(false);
+
+  React.useEffect(() => {
+    setShowTooltip(iconHover || tooltipHover);
+  }, [iconHover, tooltipHover]);
+
   return (
-    <div className="form-control">
-      <label className="label">
+    <div className="form-control relative">
+      <label className="label flex items-center justify-between">
         <span className="label-text text-base-content">{label}</span>
+        {hint && (
+          <div className="ml-2 flex-shrink-0 relative">
+            <HelpCircle
+              className="w-5 h-5 text-primary cursor-pointer"
+              onClick={() => setShowTooltip((s) => !s)}
+              onMouseEnter={() => setIconHover(true)}
+              onMouseLeave={() => setIconHover(false)}
+              aria-label="Help"
+              title={hint}
+            />
+
+            {showTooltip && (
+              <div
+                className="absolute right-0 top-full mt-2 w-80 bg-base-100 text-base-content p-3 rounded shadow-lg z-50"
+                onMouseEnter={() => setTooltipHover(true)}
+                onMouseLeave={() => setTooltipHover(false)}
+              >
+                {/* Removed explicit close button per UX change - tooltip hides on mouse leave or icon toggle */}
+                <p className="text-sm">{hint}</p>
+              </div>
+            )}
+          </div>
+        )}
       </label>
       <input
         name={name}
