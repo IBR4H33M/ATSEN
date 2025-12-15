@@ -2,6 +2,7 @@
 import "./institution.js";
 import "./instructor.js";
 import "./student.js";
+import "./Admin.js";
 import "./Room.js";
 import "./Material.js";
 import "./Assessment.js";

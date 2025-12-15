@@ -64,7 +64,7 @@ export default function AccessControl() {
         </div>
         {err && <div className="alert alert-error mb-4">{err}</div>}
         <div className="flex gap-2">
-          <button onClick={handleAdd} className="btn btn-primary" disabled={adding}>{adding ? 'Adding...' : 'Add Admin (default password pass1234)'}</button>
+          <button onClick={handleAdd} className="btn btn-primary" disabled={adding}>{adding ? 'Adding...' : 'Add Admin'}</button>
           <Link to={`/${encodeURIComponent(idOrName)}/dashboard`} className="btn btn-ghost">Back</Link>
         </div>
       </div>

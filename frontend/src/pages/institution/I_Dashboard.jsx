@@ -212,21 +212,21 @@ export default function I_Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-room`}
-            className="btn btn-primary min-w-[100px]"
+            className="btn btn-primary min-w-[100px] hover:scale-105 hover:shadow-lg transition-all duration-200"
           >
             <Plus className="h-5 w-5 mr-2" />
             Add Room
           </Link>
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-student`}
-            className="btn btn-outline min-w-[100px]"
+            className="btn btn-outline min-w-[100px] hover:scale-105 hover:shadow-lg transition-all duration-200"
           >
             <UserPlus className="h-5 w-5 mr-2" />
             Add Student
           </Link>
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-instructor`}
-            className="btn btn-outline min-w-[100px]"
+            className="btn btn-outline min-w-[100px] hover:scale-105 hover:shadow-lg transition-all duration-200"
           >
             <Users className="h-5 w-5 mr-2" />
             Add Instructor
