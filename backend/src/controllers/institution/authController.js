@@ -83,27 +83,44 @@ export async function loginInstitution(req, res) {
   try {
     const emailNormalized = email.toLowerCase().trim();
     
-    // Find institution only by superadminEmail
-    const inst = await Institution.findOne({ superadminEmail: emailNormalized });
-    
+    // First try superadmin login
+    let inst = await Institution.findOne({ superadminEmail: emailNormalized });
+    let isSuperadmin = false;
+    if (inst) {
+      const matches = await bcrypt.compare(password, inst.password);
+      if (matches) {
+        isSuperadmin = true;
+      } else {
+        inst = null; // treat as not found for superadmin
+      }
+    }
+
+    // If not superadmin, try matching an institution admin
+    let adminEmail = null;
+    if (!inst) {
+      const instWithAdmin = await Institution.findOne({ 'admins.email': emailNormalized }).select('+admins.password');
+      if (instWithAdmin) {
+        const admin = (instWithAdmin.admins || []).find(a => a.email.toLowerCase() === emailNormalized);
+        if (admin) {
+          const ok = await bcrypt.compare(password, admin.password || '');
+          if (ok) {
+            inst = instWithAdmin;
+            adminEmail = admin.email;
+            isSuperadmin = false;
+          }
+        }
+      }
+    }
+
     if (!inst) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const matches = await bcrypt.compare(password, inst.password);
-    if (!matches) {
-      return res.status(401).json({ message: "Invalid credentials." });
-    }
-
     const slug = await ensureSlug(inst);
-    const isSuperadmin = inst.superadminEmail.toLowerCase() === emailNormalized;
-
     // Include the email in the token so downstream auth checks can identify the requester
-    const token = jwt.sign(
-      { id: inst._id, role: "institution", email: emailNormalized, isSuperadmin },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const tokenPayload = { id: inst._id, role: "institution", email: emailNormalized, isSuperadmin };
+    if (adminEmail) tokenPayload.adminEmail = adminEmail;
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     return res.json({
       token,

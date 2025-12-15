@@ -11,6 +11,7 @@ export default function AccessControl() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("1234");
   const [adding, setAdding] = useState(false);
   const [err, setErr] = useState("");
 
@@ -38,14 +39,25 @@ export default function AccessControl() {
     if (!superadmin?.email) return setErr("Superadmin not found");
     setAdding(true);
     try {
-      await api.post(`/institutions/${encodeURIComponent(idOrName)}/access-control`, { email, name });
+      await api.post(`/institutions/${encodeURIComponent(idOrName)}/access-control`, { email, name, password });
       setEmail("");
       setName("");
+      setPassword("1234");
       fetchAdmins();
     } catch (err) {
       setErr(err.response?.data?.message || "Failed to add admin");
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleDelete = async (adminEmail) => {
+    if (!confirm(`Delete admin ${adminEmail}?`)) return;
+    try {
+      await api.delete(`/institutions/${encodeURIComponent(idOrName)}/access-control`, { data: { email: adminEmail } });
+      fetchAdmins();
+    } catch (err) {
+      setErr(err.response?.data?.message || 'Failed to remove admin');
     }
   };
 
@@ -64,6 +76,11 @@ export default function AccessControl() {
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Name (optional)</label>
           <input value={name} onChange={(e) => setName(e.target.value)} className="input input-bordered w-full" placeholder="Admin Name" />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Password</label>
+          <input value={password} onChange={(e) => setPassword(e.target.value)} className="input input-bordered w-full" placeholder="1234" />
+          <p className="text-xs text-base-content/60 mt-1">Default password is 1234 if left as-is.</p>
         </div>
         {err && <div className="alert alert-error mb-4">{err}</div>}
         <div className="flex gap-2">
@@ -99,6 +116,14 @@ export default function AccessControl() {
                 <div>
                   <div className="font-medium">{a.name || a.email}</div>
                   <div className="text-sm text-base-content/60">{a.email}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="btn btn-sm btn-outline"
+                    onClick={() => handleDelete(a.email)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </li>
             ))}

@@ -22,8 +22,9 @@ export const universalLogin = async (req, res) => {
     let role = null;
     let userData = null;
 
-    // Check in institutions first (only superadminEmail allowed)
+    // Check in institutions first (superadmin or institution-level admin)
     const emailNormalized = email.toLowerCase().trim();
+    // Check for superadmin match
     const institution = await Institution.findOne({ superadminEmail: emailNormalized });
     if (institution) {
       const isValidPassword = await bcrypt.compare(password, institution.password);
@@ -38,8 +39,33 @@ export const universalLogin = async (req, res) => {
           eiin: institution.eiin,
           phone: institution.phone,
           address: institution.address,
-          description: institution.description
+          description: institution.description,
+          isSuperadmin: true
         };
+      }
+    }
+
+    // If not superadmin, check institution admins (need to include admin password field)
+    if (!user) {
+      const instWithAdmin = await Institution.findOne({ 'admins.email': emailNormalized }).select('+admins.password');
+      if (instWithAdmin) {
+        const admin = (instWithAdmin.admins || []).find(a => a.email.toLowerCase() === emailNormalized);
+        if (admin) {
+          const isValid = await bcrypt.compare(password, admin.password || '');
+          if (isValid) {
+            user = instWithAdmin;
+            role = 'institution';
+            userData = {
+              _id: instWithAdmin._id,
+              name: instWithAdmin.name,
+              email: emailNormalized,
+              slug: instWithAdmin.slug,
+              eiin: instWithAdmin.eiin,
+              isSuperadmin: false,
+              adminEmail: admin.email
+            };
+          }
+        }
       }
     }
 
@@ -83,15 +109,15 @@ export const universalLogin = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { 
-        id: user._id, 
-        role,
-        email: emailNormalized || user.email 
-      },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const tokenPayload = {
+      id: user._id,
+      role,
+      email: userData?.email || emailNormalized || user.email,
+      isSuperadmin: !!(userData && userData.isSuperadmin)
+    };
+    if (userData && userData.adminEmail) tokenPayload.adminEmail = userData.adminEmail;
+
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "7d" });
 
     // Return response based on role
     const response = {

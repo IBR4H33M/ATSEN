@@ -84,6 +84,8 @@ const institutionSchema = new mongoose.Schema(
       {
         email: { type: String, required: true, lowercase: true, trim: true },
         name: { type: String, trim: true },
+        // hashed password (bcrypt) for institution-level admin accounts — hidden by default
+        password: { type: String, trim: true, select: false },
         createdAt: { type: Date, default: Date.now }
       }
     ]
