@@ -12,9 +12,6 @@ import rateLimiter from "./middlewares/rateLimiter.js";
 // Import all models to ensure they are registered
 import "./models/index.js";
 
-// Import all models to ensure they are registered
-import "./models/index.js";
-
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import institutionRoutes from "./routes/institutionRoutes.js";
