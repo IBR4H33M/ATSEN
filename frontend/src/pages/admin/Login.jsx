@@ -23,7 +23,13 @@ export default function Login() {
       const { data } = await api.post("/admin/login", form);
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminData", JSON.stringify(data.admin));
-      navigate("/admin/dashboard");
+      // Prefer redirecting to the institution dashboard when possible
+      const admin = data.admin || {};
+      let target = "/admin/dashboard";
+      if (admin.slug) target = `/${admin.slug}/dashboard`;
+      else if (admin.institutionSlug) target = `/${admin.institutionSlug}/dashboard`;
+      else if (admin.institution && admin.institution.slug) target = `/${admin.institution.slug}/dashboard`;
+      navigate(target);
     } catch (error) {
       console.error("Login error:", error);
       setError(error.response?.data?.message || "Invalid email or password");
