@@ -40,14 +40,14 @@ export async function registerInstitution(req, res) {
   try {
     // Check if institution already exists (approved) or is pending
     const emailNormalized = email.toLowerCase().trim();
-    const existingInstitution = await Institution.findOne({ $or: [{ eiin }, { emails: emailNormalized }] });
+    const existingInstitution = await Institution.findOne({ $or: [{ eiin }, { superadminEmail: emailNormalized }] });
     if (existingInstitution) {
       return res.status(409).json({
         message: "Institution with same EIIN or Email already exists."
       });
     }
 
-    const existingPending = await PendingInstitute.findOne({ $or: [{ eiin }, { emails: emailNormalized }] });
+    const existingPending = await PendingInstitute.findOne({ $or: [{ eiin }, { superadminEmail: emailNormalized }] });
     if (existingPending) {
       return res.status(409).json({
         message: "Registration request with same EIIN or Email is already pending approval."
@@ -58,7 +58,7 @@ export async function registerInstitution(req, res) {
     const pendingInstitute = await PendingInstitute.create({
       name,
       eiin: eiin.toUpperCase().trim(),
-      emails: [emailNormalized],
+      superadminEmail: emailNormalized,
       password, // Will be hashed by the model's pre-save hook
       phone,
       address,
@@ -76,13 +76,16 @@ export async function registerInstitution(req, res) {
   }
 }
 
-// Login an existing institution
+// Login an existing institution (superadmin or admin)
 export async function loginInstitution(req, res) {
   const { email, password } = req.body;
 
   try {
     const emailNormalized = email.toLowerCase().trim();
-    const inst = await Institution.findOne({ emails: emailNormalized });
+    
+    // Find institution only by superadminEmail
+    const inst = await Institution.findOne({ superadminEmail: emailNormalized });
+    
     if (!inst) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
@@ -93,16 +96,18 @@ export async function loginInstitution(req, res) {
     }
 
     const slug = await ensureSlug(inst);
+    const isSuperadmin = inst.superadminEmail.toLowerCase() === emailNormalized;
 
+    // Include the email in the token so downstream auth checks can identify the requester
     const token = jwt.sign(
-      { id: inst._id, role: "institution" },
+      { id: inst._id, role: "institution", email: emailNormalized, isSuperadmin },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     return res.json({
       token,
-      institution: { id: inst._id, slug, name: inst.name }
+      institution: { id: inst._id, slug, name: inst.name, isSuperadmin, email: emailNormalized }
     });
   } catch (err) {
     console.error("Login institution error:", err);

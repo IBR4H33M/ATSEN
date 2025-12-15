@@ -62,7 +62,7 @@ export async function loginAdmin(req, res) {
 export async function getPendingInstitutions(req, res) {
   try {
     const pendingInstitutes = await PendingInstitute.find({ status: 'pending' })
-      .select('name eiin emails phone address description createdAt')
+      .select('name eiin superadminEmail phone address description createdAt')
       .sort({ createdAt: -1 });
     
     res.json(pendingInstitutes);
@@ -97,29 +97,19 @@ export async function approveInstitution(req, res) {
     const institutionData = {
       name: pendingInstitute.name,
       eiin: pendingInstitute.eiin,
-      emails: pendingInstitute.emails || [],
+      superadminEmail: pendingInstitute.superadminEmail,
       password: pendingInstitute.password, // Already hashed
       phone: pendingInstitute.phone,
       address: pendingInstitute.address,
       description: pendingInstitute.description,
       active: true,
+      admins: [],
       // Generate a unique loginId based on name + timestamp
       loginId: slugify(pendingInstitute.name, { 
         lower: true, 
         strict: true 
       }) + '-' + Date.now()
     };
-
-    // Set initial admins: first email becomes master admin
-    const primaryEmail = (pendingInstitute.emails && pendingInstitute.emails.length > 0)
-      ? pendingInstitute.emails[0]
-      : null;
-
-    if (primaryEmail) {
-      institutionData.admins = [
-        { email: primaryEmail, name: pendingInstitute.name + ' Admin', role: 'master' }
-      ];
-    }
 
     // Create the institution and save (this will trigger the slug generation)
     const institution = new Institution(institutionData);
@@ -144,28 +134,10 @@ export async function approveInstitution(req, res) {
         id: institution._id,
         name: institution.name,
         eiin: institution.eiin,
-        emails: institution.emails,
+        superadminEmail: institution.superadminEmail,
         slug: institution.slug
       }
     });
-
-    // Optionally create a global Admin account for the master institution admin
-    try {
-      if (primaryEmail) {
-        const AdminModel = (await import('../models/Admin.js')).default;
-        const existing = await AdminModel.findOne({ email: primaryEmail });
-        if (!existing) {
-          await AdminModel.create({
-            name: pendingInstitute.name + ' Admin',
-            email: primaryEmail,
-            password: 'pass1234',
-            role: 'admin'
-          });
-        }
-      }
-    } catch (err) {
-      console.error('Failed creating global admin for institution master:', err?.message || err);
-    }
 
   } catch (error) {
     console.error("Error approving institution:", error);
@@ -213,7 +185,7 @@ export async function rejectInstitution(req, res) {
 export async function getAllInstitutions(req, res) {
   try {
     const institutions = await Institution.find({})
-      .select('name eiin emails active createdAt')
+      .select('name eiin superadminEmail active createdAt')
       .sort({ createdAt: -1 });
     
     res.json(institutions);

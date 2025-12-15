@@ -122,10 +122,7 @@ export default function I_Dashboard() {
     );
 
   // Compute master admin email for access control button
-  const masterEmail = (data.admins && data.admins.find(a => a.role === 'master') && data.admins.find(a => a.role === 'master').email)
-    || (data.emails && data.emails[0])
-    || data.email
-    || null;
+  const masterEmail = data.superadminEmail || (data.admins && data.admins.find(a => a.role === 'master') && data.admins.find(a => a.role === 'master').email) || null;
 
   return (
     <div className="max-w-7xl mx-auto p-4 mt-6">
@@ -365,12 +362,12 @@ export default function I_Dashboard() {
                 <p className="text-base-content">{data.address}</p>
               </div>
             )}
-            {data.email && (
+            {data.superadminEmail && (
               <div>
                 <p className="text-sm font-medium text-base-content/60">
                   Email
                 </p>
-                <p className="text-base-content">{data.email}</p>
+                <p className="text-base-content">{data.superadminEmail}</p>
               </div>
             )}
             {data.phone && (

@@ -53,9 +53,9 @@ router.get("/:idOrName/dashboard", getInstitutionDashboard);
 // Update institution settings
 router.put("/:idOrName/settings", updateInstitutionSettings);
 
-// Access control - list and add admins
-router.get("/:idOrName/access-control", getAccessControl);
-router.post("/:idOrName/access-control", addAdmin);
+// Access control - list and add admins (protected: superadmin only)
+router.get("/:idOrName/access-control", authMiddleware, getAccessControl);
+router.post("/:idOrName/access-control", authMiddleware, addAdmin);
 
 router.post("/:idOrName/add-student", addStudent);
 router.post("/:idOrName/remove-student", removeStudent);

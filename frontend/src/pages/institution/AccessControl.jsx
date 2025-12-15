@@ -6,6 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export default function AccessControl() {
   const { idOrName } = useParams();
   const { user } = useAuth();
+  const [superadmin, setSuperadmin] = useState(null);
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ export default function AccessControl() {
     try {
       setLoading(true);
       const res = await api.get(`/institutions/${encodeURIComponent(idOrName)}/access-control`);
+      setSuperadmin(res.data.superadmin || null);
       setAdmins(res.data.admins || []);
     } catch (err) {
       console.error(err);
@@ -33,9 +35,10 @@ export default function AccessControl() {
   const handleAdd = async () => {
     setErr("");
     if (!email) return setErr("Email is required");
+    if (!superadmin?.email) return setErr("Superadmin not found");
     setAdding(true);
     try {
-      await api.post(`/institutions/${encodeURIComponent(idOrName)}/access-control`, { email, name, role: 'admin' });
+      await api.post(`/institutions/${encodeURIComponent(idOrName)}/access-control`, { email, name });
       setEmail("");
       setName("");
       fetchAdmins();
@@ -69,19 +72,33 @@ export default function AccessControl() {
         </div>
       </div>
 
+      <div className="card bg-base-100 border border-base-300 p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4">Superadmin</h2>
+        {loading ? (
+          <div className="text-center py-6">Loading...</div>
+        ) : superadmin ? (
+          <div className="p-3 bg-primary/10 rounded">
+            <div className="font-medium">{superadmin.email}</div>
+            <div className="text-sm text-base-content/60">Institution Owner</div>
+          </div>
+        ) : (
+          <div className="text-center py-6">No superadmin found</div>
+        )}
+      </div>
+
       <div className="card bg-base-100 border border-base-300 p-6">
-        <h2 className="text-lg font-semibold mb-4">Current Admins</h2>
+        <h2 className="text-lg font-semibold mb-4">Additional Admins</h2>
         {loading ? (
           <div className="text-center py-6">Loading admins...</div>
         ) : admins.length === 0 ? (
-          <div className="text-center py-6">No admins found</div>
+          <div className="text-center py-6">No additional admins</div>
         ) : (
           <ul className="space-y-3">
             {admins.map((a) => (
               <li key={a.email} className="flex items-center justify-between p-3 bg-base-200 rounded">
                 <div>
                   <div className="font-medium">{a.name || a.email}</div>
-                  <div className="text-sm text-base-content/60">{a.email} • {a.role}</div>
+                  <div className="text-sm text-base-content/60">{a.email}</div>
                 </div>
               </li>
             ))}

@@ -18,11 +18,11 @@ const institutionSchema = new mongoose.Schema(
       trim: true,
       uppercase: true
     },
-    // allow multiple admin/login emails per institution
-    emails: {
-      type: [String],
+    // Superadmin email (single email for institution owner)
+    superadminEmail: {
+      type: String,
       required: true,
-      validate: [(val) => Array.isArray(val) && val.length > 0, 'At least one email is required'],
+      unique: true,
       lowercase: true,
       trim: true
     },
@@ -79,12 +79,11 @@ const institutionSchema = new mongoose.Schema(
       }
     ]
     ,
-    // Institution-level admins (institution-specific accounts)
+    // Additional admins (can be added by superadmin)
     admins: [
       {
         email: { type: String, required: true, lowercase: true, trim: true },
         name: { type: String, trim: true },
-        role: { type: String, enum: ["master", "admin"], default: "admin" },
         createdAt: { type: Date, default: Date.now }
       }
     ]
@@ -95,8 +94,7 @@ const institutionSchema = new mongoose.Schema(
   }
 );
 
-  // Ensure unique index on each email across institutions
-  institutionSchema.index({ emails: 1 }, { unique: true, sparse: true });
+
 
 // Auto-generate a URL-safe slug from the institution name
 institutionSchema.pre("validate", async function () {

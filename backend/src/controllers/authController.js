@@ -22,9 +22,9 @@ export const universalLogin = async (req, res) => {
     let role = null;
     let userData = null;
 
-    // Check in institutions first (emails is an array)
+    // Check in institutions first (only superadminEmail allowed)
     const emailNormalized = email.toLowerCase().trim();
-    const institution = await Institution.findOne({ emails: emailNormalized });
+    const institution = await Institution.findOne({ superadminEmail: emailNormalized });
     if (institution) {
       const isValidPassword = await bcrypt.compare(password, institution.password);
       if (isValidPassword) {

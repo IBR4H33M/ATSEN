@@ -18,11 +18,10 @@ const pendingInstituteSchema = new mongoose.Schema(
       trim: true,
       uppercase: true
     },
-    // admin emails for the pending registration (usually one)
-    emails: {
-      type: [String],
+    // Superadmin email for the pending registration
+    superadminEmail: {
+      type: String,
       required: true,
-      validate: [(val) => Array.isArray(val) && val.length > 0, 'At least one email is required'],
       trim: true,
       lowercase: true
     },
