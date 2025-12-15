@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://atsen.app/api",
-});
+const base = import.meta.env.VITE_API_URL || "https://atsen.app/api";
+const api = axios.create({ baseURL: base });
 
-// Debug logging for environment
-console.log('API Base URL:', import.meta.env.VITE_API_URL || "https://atsen.app/api");
-console.log('Environment:', import.meta.env.MODE);
+// Debug logging for environment (shows whether VITE_API_URL is set)
+console.log('API Base URL:', base);
+console.log('VITE_API_URL set:', !!import.meta.env.VITE_API_URL, 'Mode:', import.meta.env.MODE);
 
 // Attach token automatically
 api.interceptors.request.use(config => {

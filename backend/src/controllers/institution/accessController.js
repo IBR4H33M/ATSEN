@@ -28,13 +28,6 @@ export async function addAdmin(req, res) {
     const institution = await findInstitutionByIdOrName(idOrName);
     if (!institution) return res.status(404).json({ message: "Institution not found" });
 
-    // Ensure requester is master admin
-    const requesterEmail = (req.user && req.user.email) || (req.admin && req.admin.email);
-    const master = (institution.admins || []).find(a => a.role === 'master');
-    if (!master || !requesterEmail || master.email.toLowerCase() !== requesterEmail.toLowerCase()) {
-      return res.status(403).json({ message: "Only the master admin can manage access control" });
-    }
-
     const emailNorm = email.toLowerCase().trim();
 
     // Prevent duplicate in institution admin list
@@ -43,10 +36,9 @@ export async function addAdmin(req, res) {
     }
 
     // Create global Admin account if not exists
-    let createdAdmin = null;
     const existingGlobal = await Admin.findOne({ email: emailNorm });
     if (!existingGlobal) {
-      createdAdmin = await Admin.create({ name: name || emailNorm.split('@')[0], email: emailNorm, password: 'pass1234', role: 'admin' });
+      await Admin.create({ name: name || emailNorm.split('@')[0], email: emailNorm, password: 'pass1234', role: 'admin' });
     }
 
     // Add to institution admins
