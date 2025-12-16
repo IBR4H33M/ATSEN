@@ -2,7 +2,7 @@
 
 import jwt from "jsonwebtoken";
 import slugify from "slugify";
-import Admin from "../models/Admin.js";
+import DevAdmin from "../models/Admin.js";
 import Institution from "../models/institution.js";
 import PendingInstitute from "../models/PendingInstitute.js";
 import mongoose from "mongoose";
@@ -19,8 +19,8 @@ export async function loginAdmin(req, res) {
       return res.status(400).json({ message: "Email and password are required" });
     }
     
-    // Find admin by email
-    const admin = await Admin.findOne({ email: email.toLowerCase() });
+    // Find devAdmin by email
+    const admin = await DevAdmin.findOne({ email: email.toLowerCase() });
     if (!admin) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -49,7 +49,7 @@ export async function loginAdmin(req, res) {
 
     res.json({ 
       token, 
-      admin: {
+      devAdmin: {
         id: admin._id,
         name: admin.name,
         email: admin.email,

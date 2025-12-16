@@ -1,0 +1,13 @@
+// MongoDB Shell Commands to rename Admin collection to DevAdmin
+// Run these in MongoDB Compass mongosh
+
+// Step 1: Rename the collection from 'admins' to 'devadmins'
+db.admins.renameCollection("devadmins");
+
+// Step 2: Verify the rename
+db.devadmins.countDocuments();
+
+// Step 3: List all devadmins to confirm
+db.devadmins.find({});
+
+print("Migration completed! Collection 'admins' renamed to 'devadmins'");

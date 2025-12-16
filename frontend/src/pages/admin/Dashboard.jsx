@@ -132,7 +132,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/70 group-hover:text-blue-600">
-                  Total Institutions
+                  Registered Institutions
                 </p>
                 <p className="text-3xl font-bold text-base-content group-hover:text-blue-700">
                   {institutions.length}
@@ -142,7 +142,13 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-green-300 group p-6">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
+            className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-green-300 group p-6 cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/70 group-hover:text-green-600">
@@ -154,14 +160,7 @@ export default function Dashboard() {
               </div>
               <Activity className="h-12 w-12 text-green-500 group-hover:text-green-600" />
             </div>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
-              className="p-3"
-            />
-            </div>
+          </div>
 
           <div
             role="button"
@@ -294,19 +293,8 @@ export default function Dashboard() {
               )}
             </>
           ) : activeTab === 'total' ? (
-            // Approved / Total Institutions Tab
+            // Registered Institutions Tab
             <>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center">
-                  <Building className="h-6 w-6 text-primary mr-3" />
-                  <h2 className="text-xl font-semibold text-base-content">
-                    Approved Institutions
-                  </h2>
-                </div>
-                <div className="text-sm text-base-content/70">
-                  Total: {institutions.length}
-                </div>
-              </div>
 
               {loading ? (
                 <div className="flex justify-center items-center py-12">

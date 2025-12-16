@@ -2,7 +2,7 @@
 import "./institution.js";
 import "./instructor.js";
 import "./student.js";
-import "./Admin.js";
+import "./Admin.js"; // DevAdmin model
 import "./Room.js";
 import "./Material.js";
 import "./Assessment.js";

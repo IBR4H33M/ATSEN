@@ -11,7 +11,8 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Check for admin user in localStorage
-  const adminData = JSON.parse(localStorage.getItem("adminData") || "null");
+  const adminDataStr = localStorage.getItem("adminData");
+  const adminData = adminDataStr && adminDataStr !== "undefined" ? JSON.parse(adminDataStr) : null;
   const currentUser = user || (adminData ? { ...adminData, role: "admin" } : null);
 
   const handleLogout = () => {
