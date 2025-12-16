@@ -21,15 +21,12 @@ export default function Login() {
 
     try {
       const { data } = await api.post("/admin/login", form);
+      // Clear all existing sessions
+      localStorage.clear();
+      // Set new admin session
       localStorage.setItem("token", data.token);
-      localStorage.setItem("adminData", JSON.stringify(data.admin));
-      // Prefer redirecting to the institution dashboard when possible
-      const admin = data.admin || {};
-      let target = "/admin/dashboard";
-      if (admin.slug) target = `/${admin.slug}/dashboard`;
-      else if (admin.institutionSlug) target = `/${admin.institutionSlug}/dashboard`;
-      else if (admin.institution && admin.institution.slug) target = `/${admin.institution.slug}/dashboard`;
-      navigate(target);
+      localStorage.setItem("adminData", JSON.stringify(data.devAdmin));
+      navigate("/admin/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       setError(error.response?.data?.message || "Invalid email or password");
@@ -72,7 +69,7 @@ export default function Login() {
                     <input
                       type="email"
                       name="email"
-                      className="input input-bordered"
+                      className="input input-bordered w-full"
                       value={form.email}
                       onChange={handleChange}
                       required
@@ -88,7 +85,7 @@ export default function Login() {
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
-                        className="input input-bordered pr-10"
+                        className="input input-bordered w-full pr-10"
                         value={form.password}
                         onChange={handleChange}
                         required
@@ -100,9 +97,9 @@ export default function Login() {
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-base-content/40" />
+                          <EyeOff className="h-5 w-5 text-base-content/40" />
                         ) : (
-                          <Eye className="h-4 w-4 text-base-content/40" />
+                          <Eye className="h-5 w-5 text-base-content/40" />
                         )}
                       </button>
                     </div>

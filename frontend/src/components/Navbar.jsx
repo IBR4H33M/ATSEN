@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, LogOut, User, Trophy, Moon, Sun, BarChart3, Users, MessageSquare } from "lucide-react";
+import { ChevronDown, LogOut, User, Trophy, Moon, Sun, BarChart3, Users, MessageSquare, Settings } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { useTheme } from "../contexts/ThemeContext.jsx";
 
@@ -10,10 +10,10 @@ const Navbar = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Check for admin user in localStorage
+  // Check for admin user in localStorage - prioritize admin over regular user
   const adminDataStr = localStorage.getItem("adminData");
   const adminData = adminDataStr && adminDataStr !== "undefined" ? JSON.parse(adminDataStr) : null;
-  const currentUser = user || (adminData ? { ...adminData, role: "admin" } : null);
+  const currentUser = adminData ? { ...adminData, role: "admin" } : user;
 
   const handleLogout = () => {
     if (adminData) {
@@ -197,8 +197,18 @@ const Navbar = () => {
                     </>
                   )}
 
-                  {/* Forms link for institutions and students only */}
-                  {user?.role !== "instructor" && (
+                  {/* Account Settings for all users */}
+                  <Link
+                    to={currentUser.role === "admin" ? "/admin/settings" : currentUser.role === "institution" ? `/${currentUser.slug}/settings` : currentUser.role === "instructor" ? "/teacher/settings" : "/student/settings"}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="w-full text-left px-4 py-2 text-sm text-base-content hover:bg-base-200 flex items-center space-x-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span>Account Settings</span>
+                  </Link>
+
+                  {/* Forms link for institutions and students only - not for admin */}
+                  {currentUser.role !== "admin" && currentUser.role !== "instructor" && (
                     <>
                       <Link
                         to={getFormsLink()}

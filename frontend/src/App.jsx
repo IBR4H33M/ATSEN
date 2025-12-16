@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 // Admin
 import Login from "./pages/admin/Login.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
+import DevAdminSettings from "./pages/admin/DevAdminSettings.jsx";
 import AdminProtectedRoute from "./pages/admin/ProtectedRoute.jsx";
 
 // Auth
@@ -26,6 +27,7 @@ import AddInstructor from "./pages/institution/AddInstructor.jsx";
 import StudentList from "./pages/institution/StudentList.jsx";
 import InstructorList from "./pages/institution/InstructorList.jsx";
 import InstitutionSettings from "./pages/institution/InstitutionSettings.jsx";
+import InstitutionAdminSettings from "./pages/institution/InstitutionAdminSettings.jsx";
 import AccessControl from "./pages/institution/AccessControl.jsx";
 import AddStudent from "./pages/institution/AddStudent";
 import EditRoom from "./pages/institution/EditRoom.jsx";
@@ -36,10 +38,12 @@ import T_Dashboard from "./pages/teacher/T_Dashboard.jsx";
 import T_Room from "./pages/teacher/T_Room.jsx";
 import T_AssignmentDetail from "./pages/teacher/T_AssignmentDetail.jsx";
 import T_QuizDetail from "./pages/teacher/T_QuizDetail.jsx";
+import InstructorSettings from "./pages/teacher/InstructorSettings.jsx";
 
 import S_Dashboard from "./pages/student/S_Dashboard.jsx";
 import S_Room from "./pages/student/S_Room.jsx";
 import S_Profile from "./pages/student/S_Profile.jsx";
+import StudentSettings from "./pages/student/StudentSettings.jsx";
 import S_Documents from "./pages/student/S_Documents.jsx";
 import S_SupportTickets from "./pages/student/S_SupportTickets.jsx";
 import MyProgress from "./pages/MyProgress.jsx";
@@ -97,6 +101,14 @@ export default function App() {
               </AdminProtectedRoute>
             }
           />
+          <Route
+            path="/admin/settings"
+            element={
+              <AdminProtectedRoute>
+                <DevAdminSettings />
+              </AdminProtectedRoute>
+            }
+          />
 
           {/* 5. Dynamic Institution Routes */}
           <Route
@@ -123,7 +135,8 @@ export default function App() {
             <Route path="add-student" element={<AddStudent />} />
 
             {/* Settings */}
-            <Route path="settings" element={<InstitutionSettings />} />
+            <Route path="settings" element={<InstitutionAdminSettings />} />
+            <Route path="institution-settings" element={<InstitutionSettings />} />
             <Route path="access-control" element={<AccessControl />} />
 
             {/* Document Desk */}
@@ -149,6 +162,14 @@ export default function App() {
             element={
               <ProtectedRoute requiredRole="instructor">
                 <T_Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teacher/settings"
+            element={
+              <ProtectedRoute requiredRole="instructor">
+                <InstructorSettings />
               </ProtectedRoute>
             }
           />
@@ -195,6 +216,14 @@ export default function App() {
              }
            />
            <Route path="/student/profile" element={<S_Profile />} />
+           <Route
+             path="/student/settings"
+             element={
+               <ProtectedRoute requiredRole="student">
+                 <StudentSettings />
+               </ProtectedRoute>
+             }
+           />
            <Route
              path="/student/documents"
              element={
