@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building, Clock, CheckCircle, XCircle, Calendar, Shield, Activity, AlertCircle } from "lucide-react";
 import api from "../../lib/axios";
@@ -7,9 +7,11 @@ import Navbar from "../../components/Navbar";
 export default function Dashboard() {
   const [institutions, setInstitutions] = useState([]);
   const [pendingInstitutions, setPendingInstitutions] = useState([]);
+  const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'approved'
   const navigate = useNavigate();
+  const tabsRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -18,12 +20,14 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [institutionsRes, pendingRes] = await Promise.all([
+      const [institutionsRes, pendingRes, systemRes] = await Promise.all([
         api.get("/admin/institutions"),
-        api.get("/admin/institutions/pending")
+        api.get("/admin/institutions/pending"),
+        api.get("/admin/system-status")
       ]);
       setInstitutions(institutionsRes.data);
       setPendingInstitutions(pendingRes.data);
+      setSystemStatus(systemRes.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       if (error.response?.status === 401) {
@@ -58,6 +62,31 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeleteInstitution = async (id) => {
+    if (!confirm('Delete this institution permanently?')) return;
+    try {
+      await api.delete(`/admin/institutions/${id}`);
+      alert('Institution deleted');
+      fetchData();
+    } catch (err) {
+      console.error('Error deleting institution:', err);
+      alert('Failed to delete institution');
+    }
+  };
+
+  const handleToggleActive = async (id, currentActive) => {
+    const action = currentActive ? 'deactivate' : 'activate';
+    if (!confirm(`Are you sure you want to ${action} this institution?`)) return;
+    try {
+      await api.patch(`/admin/institutions/${id}/active`, { active: !currentActive });
+      alert(`Institution ${action}d`);
+      fetchData();
+    } catch (err) {
+      console.error('Error toggling active state:', err);
+      alert('Failed to update institution state');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-200">
       <Navbar />
@@ -73,7 +102,13 @@ export default function Dashboard() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-orange-300 group p-6">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { setActiveTab('pending'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('pending'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
+            className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-orange-300 group p-6 cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/70 group-hover:text-orange-600">
@@ -87,7 +122,13 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-blue-300 group p-6">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { setActiveTab('total'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('approved'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
+            className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-blue-300 group p-6 cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/70 group-hover:text-blue-600">
@@ -113,16 +154,29 @@ export default function Dashboard() {
               </div>
               <Activity className="h-12 w-12 text-green-500 group-hover:text-green-600" />
             </div>
-          </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('active'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
+              className="p-3"
+            />
+            </div>
 
-          <div className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-purple-300 group p-6">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { setActiveTab('system'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setActiveTab('system'); tabsRef.current?.scrollIntoView({ behavior: 'smooth' }); } }}
+            className="card bg-base-100 hover:bg-base-200 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-purple-300 group p-6 cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/70 group-hover:text-purple-600">
                   System Status
                 </p>
                 <p className="text-xl font-bold text-base-content group-hover:text-purple-700">
-                  Online
+                  {systemStatus ? (systemStatus.dbStatus?.message === 'Connected' && systemStatus.redisStatus?.ok && systemStatus.storageStatus?.ok ? 'Healthy' : 'Degraded') : 'Checking...'}
                 </p>
               </div>
               <Shield className="h-12 w-12 text-purple-500 group-hover:text-purple-600" />
@@ -130,23 +184,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="tabs tabs-boxed mb-6 bg-base-100 border border-base-300">
-          <button 
-            className={`tab ${activeTab === 'pending' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('pending')}
-          >
-            <Clock className="h-4 w-4 mr-2" />
-            Pending Requests ({pendingInstitutions.length})
-          </button>
-          <button 
-            className={`tab ${activeTab === 'approved' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('approved')}
-          >
-            <Building className="h-4 w-4 mr-2" />
-            Approved Institutions ({institutions.length})
-          </button>
-        </div>
+        {/* Tab Navigation removed as requested; spacer retained for scrolling */}
+        <div ref={tabsRef} className="mb-6" />
 
         {/* Content based on active tab */}
         <div className="card bg-base-100 border border-base-300 p-6">
@@ -254,8 +293,8 @@ export default function Dashboard() {
                 </div>
               )}
             </>
-          ) : (
-            // Approved Institutions Tab
+          ) : activeTab === 'total' ? (
+            // Approved / Total Institutions Tab
             <>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
@@ -316,13 +355,170 @@ export default function Dashboard() {
                             </span>
                           </div>
                         </div>
+                        <div className="card-actions justify-end p-4 pt-0">
+                          <button
+                            onClick={() => handleToggleActive(institution._id, institution.active)}
+                            className={`btn btn-sm ${institution.active ? 'btn-warning' : 'btn-success'}`}
+                          >
+                            {institution.active ? 'Deactivate' : 'Activate'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteInstitution(institution._id)}
+                            className="btn btn-sm btn-error"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
             </>
-          )}
+          ) : activeTab === 'active' ? (
+            // Active Institutions Tab
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <Activity className="h-6 w-6 text-green-500 mr-3" />
+                  <h2 className="text-xl font-semibold text-base-content">
+                    Active Institutions
+                  </h2>
+                </div>
+                <div className="text-sm text-base-content/70">
+                  Total: {institutions.filter(inst => inst.active).length}
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="flex justify-center items-center py-12">
+                  <span className="loading loading-spinner loading-lg"></span>
+                </div>
+              ) : institutions.filter(inst => inst.active).length === 0 ? (
+                <div className="text-center py-12">
+                  <Building className="h-12 w-12 text-base-content/30 mx-auto mb-4" />
+                  <p className="text-base-content/60">No active institutions found.</p>
+                  <p className="text-sm text-base-content/40">
+                    Active institutions will appear here
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {institutions.filter(inst => inst.active).map((institution) => (
+                    <div
+                      key={institution._id}
+                      className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all duration-200 hover:bg-base-200 hover:border-blue-300 group"
+                    >
+                      <div className="card-body p-6">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="card-title text-lg font-semibold text-base-content group-hover:text-blue-700">
+                            {institution.name}
+                          </h3>
+                          <div className={`badge ${institution.active ? 'badge-success' : 'badge-error'} badge-sm`}>
+                            {institution.active ? 'Active' : 'Inactive'}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3 text-sm">
+                          <div className="flex items-center">
+                            <span className="font-medium text-base-content/80 min-w-[50px]">EIIN:</span>
+                            <span className="ml-2 text-base-content/70 font-mono bg-base-200 px-2 py-1 rounded text-xs">
+                              {institution.eiin}
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="font-medium text-base-content/80 min-w-[50px]">Email:</span>
+                            <span className="ml-2 text-base-content/70 truncate">{institution.superadminEmail || ''}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 text-base-content/60 mr-2" />
+                            <span className="text-base-content/70">
+                              {new Date(institution.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="card-actions justify-end p-4 pt-0">
+                          <button
+                            onClick={() => handleToggleActive(institution._id, institution.active)}
+                            className={`btn btn-sm ${institution.active ? 'btn-warning' : 'btn-success'}`}
+                          >
+                            {institution.active ? 'Deactivate' : 'Activate'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteInstitution(institution._id)}
+                            className="btn btn-sm btn-error"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : activeTab === 'system' ? (
+            // System Status Tab
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <Shield className="h-6 w-6 text-purple-500 mr-3" />
+                  <h2 className="text-xl font-semibold text-base-content">System Status Details</h2>
+                </div>
+                <div className="text-sm text-base-content/70">Overview of resource connectivity</div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="card bg-base-100 p-4 border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">Database</p>
+                      <p className="text-sm text-base-content/70">{systemStatus?.dbStatus?.message || 'Unknown'}</p>
+                    </div>
+                    <div>
+                      {systemStatus?.dbStatus?.message === 'Connected' ? (
+                        <span className="badge badge-success">Connected</span>
+                      ) : (
+                        <span className="badge badge-error">Disconnected</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card bg-base-100 p-4 border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">Redis (Upstash)</p>
+                      <p className="text-sm text-base-content/70">{systemStatus?.redisStatus?.ok ? 'OK' : (systemStatus?.redisStatus?.message || systemStatus?.redisStatus?.error || 'Not configured')}</p>
+                    </div>
+                    <div>
+                      {systemStatus?.redisStatus?.ok ? (
+                        <span className="badge badge-success">OK</span>
+                      ) : (
+                        <span className="badge badge-warning">Unavailable</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card bg-base-100 p-4 border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">Storage (Spaces/S3)</p>
+                      <p className="text-sm text-base-content/70">{systemStatus?.storageStatus?.ok ? 'OK' : (systemStatus?.storageStatus?.message || systemStatus?.storageStatus?.error || 'Not configured')}</p>
+                    </div>
+                    <div>
+                      {systemStatus?.storageStatus?.ok ? (
+                        <span className="badge badge-success">OK</span>
+                      ) : (
+                        <span className="badge badge-warning">Unavailable</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

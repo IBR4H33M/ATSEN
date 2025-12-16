@@ -5,6 +5,7 @@ import {
   approveInstitution,
   rejectInstitution,
   getAllInstitutions
+  , deleteInstitution, getSystemStatus, setInstitutionActive
 } from "../controllers/adminController.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 
@@ -37,5 +38,14 @@ router.post(
   verifyToken,
   rejectInstitution
 );
+
+// Delete an approved institution
+router.delete("/institutions/:id", verifyToken, deleteInstitution);
+
+// Activate/Deactivate an institution
+router.patch("/institutions/:id/active", verifyToken, setInstitutionActive);
+
+// System status checks
+router.get("/system-status", verifyToken, getSystemStatus);
 
 export default router;
