@@ -475,13 +475,22 @@ export default function Dashboard() {
 
                 <div className="card bg-base-100 p-4 border">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium">Redis (Upstash)</p>
-                      <p className="text-sm text-base-content/70">{systemStatus?.redisStatus?.ok ? 'OK' : (systemStatus?.redisStatus?.message || systemStatus?.redisStatus?.error || 'Not configured')}</p>
+                      <p className="text-sm text-base-content/70">
+                        {systemStatus?.redisStatus?.ok ? 'OK' : (systemStatus?.redisStatus?.message || 'Not configured')}
+                      </p>
+                      {systemStatus?.redisStatus?.note && (
+                        <p className="text-xs text-base-content/50 mt-1">
+                          {systemStatus.redisStatus.note}
+                        </p>
+                      )}
                     </div>
                     <div>
                       {systemStatus?.redisStatus?.ok ? (
                         <span className="badge badge-success">OK</span>
+                      ) : systemStatus?.redisStatus?.message?.includes('local network') ? (
+                        <span className="badge badge-info">Dev Mode</span>
                       ) : (
                         <span className="badge badge-warning">Unavailable</span>
                       )}

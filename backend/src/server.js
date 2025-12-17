@@ -79,8 +79,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// optional rate limiting
-// app.use(rateLimiter);
+// Rate limiting enabled
+app.use(rateLimiter);
 
 // simple DB‐status check
 app.get("/api/db-status", (req, res) => {

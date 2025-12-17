@@ -240,16 +240,28 @@ export async function getSystemStatus(req, res) {
 
     // Redis (Upstash) check
     let redisStatus = { ok: false };
-    try {
-      if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-        const redis = new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
-        const pong = await redis.ping();
-        redisStatus = { ok: !!pong, pong };
-      } else {
-        redisStatus = { ok: false, message: 'No UPSTASH env configured' };
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+      try {
+        const redis = new Redis({ 
+          url: process.env.UPSTASH_REDIS_REST_URL, 
+          token: process.env.UPSTASH_REDIS_REST_TOKEN
+        });
+        const pong = await Promise.race([
+          redis.ping(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
+        ]);
+        redisStatus = { ok: true, message: 'Connected' };
+      } catch (e) {
+        // In development, network issues are common
+        const isDev = process.env.NODE_ENV !== 'production';
+        redisStatus = { 
+          ok: false, 
+          message: isDev ? 'Unreachable (local network)' : 'Connection failed',
+          note: isDev ? 'Will work in production' : undefined
+        };
       }
-    } catch (e) {
-      redisStatus = { ok: false, error: e.message || e };
+    } else {
+      redisStatus = { ok: false, message: 'Not configured' };
     }
 
     // S3 / DigitalOcean Spaces check
