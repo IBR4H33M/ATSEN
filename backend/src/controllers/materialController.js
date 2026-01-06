@@ -25,11 +25,11 @@ console.log('Spaces Config:', {
   hasSecret: !!process.env.DO_SPACES_SECRET_ACCESS_KEY
 });
 
-// Configure multer for DigitalOcean Spaces uploads
+// Configure multer for Backblaze B2 uploads (private bucket)
 const storage = multerS3({
   s3: s3Client,
   bucket: process.env.DO_SPACES_BUCKET,
-  acl: 'public-read',
+  acl: 'private', // Keep files private
   key: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, `materials/${uniqueSuffix}${path.extname(file.originalname)}`);

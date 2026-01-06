@@ -1,16 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Building } from "lucide-react";
 import Navbar from "../../components/Navbar";
+import { useAuth } from "../../contexts/AuthContext";
+import api from "../../lib/axios";
 
 export default function StudentSettings() {
+  const { user } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", currentPassword: "", newPassword: "" });
+  const [institutions, setInstitutions] = useState([]);
+  const [defaultInstitution, setDefaultInstitution] = useState(
+    localStorage.getItem('selectedInstitutionId') || ''
+  );
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      if (!user?._id) return;
+      try {
+        const res = await api.get(`/students/${user._id}`);
+        if (res.data.institutions) {
+          setInstitutions(res.data.institutions);
+          // Set first institution as default if none selected
+          if (!defaultInstitution && res.data.institutions.length > 0) {
+            const firstInstId = res.data.institutions[0]._id || res.data.institutions[0];
+            setDefaultInstitution(firstInstId);
+            localStorage.setItem('selectedInstitutionId', firstInstId);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching institutions:', error);
+      }
+    };
+    fetchInstitutions();
+  }, [user]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -20,7 +48,11 @@ export default function StudentSettings() {
     setSuccess("");
     setLoading(true);
 
-    // TODO: Implement API call
+    // Save default institution
+    localStorage.setItem('selectedInstitutionId', defaultInstitution);
+    window.dispatchEvent(new Event('institutionChanged'));
+
+    // TODO: Implement API call for other settings
     setTimeout(() => {
       setSuccess("Settings updated successfully!");
       setLoading(false);
@@ -53,6 +85,37 @@ export default function StudentSettings() {
                   <label className="label"><span className="label-text">Email</span></label>
                   <input type="email" name="email" className="input input-bordered w-full" value={form.email} onChange={handleChange} placeholder="Enter your email" />
                 </div>
+
+                {institutions.length > 0 && (
+                  <>
+                    <div className="divider">Institution Preferences</div>
+                    
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          Default Institution
+                        </span>
+                      </label>
+                      <select
+                        value={defaultInstitution}
+                        onChange={(e) => setDefaultInstitution(e.target.value)}
+                        className="select select-bordered w-full"
+                      >
+                        {institutions.map((inst) => (
+                          <option key={inst._id || inst} value={inst._id || inst}>
+                            {inst.name || 'Institution'}
+                          </option>
+                        ))}
+                      </select>
+                      <label className="label">
+                        <span className="label-text-alt text-base-content/60">
+                          This institution will be selected by default when you log in
+                        </span>
+                      </label>
+                    </div>
+                  </>
+                )}
 
                 <div className="divider">Change Password</div>
 

@@ -25,7 +25,7 @@ const S_Dashboard = () => {
   const [roomsByInstitution, setRoomsByInstitution] = useState({});
   const [institutions, setInstitutions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("rooms");
+  const [selectedInstitution, setSelectedInstitution] = useState(null);
 
   useEffect(() => {
     const fetchStudentData = async () => {
@@ -47,6 +47,16 @@ const S_Dashboard = () => {
         const studentRes = await api.get(`/students/${user._id}`);
         if (studentRes.data.institutions) {
           setInstitutions(studentRes.data.institutions);
+          
+          // Set default institution if not already set
+          const savedInstitution = localStorage.getItem('selectedInstitutionId');
+          if (savedInstitution) {
+            setSelectedInstitution(savedInstitution);
+          } else if (studentRes.data.institutions.length > 0) {
+            const firstInstId = studentRes.data.institutions[0]._id || studentRes.data.institutions[0];
+            setSelectedInstitution(firstInstId);
+            localStorage.setItem('selectedInstitutionId', firstInstId);
+          }
         }
 
         setIsRateLimited(false);
@@ -100,64 +110,11 @@ const S_Dashboard = () => {
 
       {isRateLimited && <RateLimitedUi />}
 
-      <div className="max-w-[95vw] mx-auto px-2 py-4 mt-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-base-content mb-2">
+      <div className="max-w-7xl mx-auto px-4 py-6 mt-6">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-base-content mb-2">
             Welcome, {user?.name || "Student"}
           </h1>
-          <p className="text-base-content/70">
-            Manage your rooms and request documents from your institutions
-          </p>
-        </div>
-
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <div className="flex bg-base-300 rounded-lg p-1 w-fit">
-            <button
-              onClick={() => setActiveTab("rooms")}
-              className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-                activeTab === "rooms"
-                  ? "bg-primary text-primary-content shadow-sm"
-                  : "text-base-content/70 hover:bg-base-100 hover:text-primary"
-              }`}
-            >
-              <BookOpen className="h-4 w-4 mr-2" />
-              My Rooms
-            </button>
-            <button
-              onClick={() => setActiveTab("institutions")}
-              className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-                activeTab === "institutions"
-                  ? "bg-primary text-primary-content shadow-sm"
-                  : "text-base-content/70 hover:bg-base-100 hover:text-primary"
-              }`}
-            >
-              <Building className="h-4 w-4 mr-2" />
-              My Institutions
-            </button>
-            <button
-              onClick={() => setActiveTab("documents")}
-              className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-                activeTab === "documents"
-                  ? "bg-primary text-primary-content shadow-sm"
-                  : "text-base-content/70 hover:bg-base-100 hover:text-primary"
-              }`}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              My Documents
-            </button>
-            <button
-              onClick={() => setActiveTab("support")}
-              className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-                activeTab === "support"
-                  ? "bg-sky-500 text-white shadow-sm"
-                  : "text-gray-600 hover:bg-white hover:text-sky-600"
-              }`}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Support Tickets
-            </button>
-          </div>
         </div>
 
         {loading && (
@@ -168,201 +125,121 @@ const S_Dashboard = () => {
 
         {!isRateLimited && (
           <>
-            {/* Rooms Tab */}
-            {activeTab === "rooms" && (
-              <>
-                {Object.keys(roomsByInstitution).length > 0 ? (
-                  <div className="space-y-8">
-                    {Object.entries(roomsByInstitution).map(
-                      ([institutionId, data]) => (
-                        <div key={institutionId} className="mb-8">
-                          {/* Institution Header */}
-                          <div className="mb-6 border-b border-gray-200 pb-4">
-                            <div className="flex items-center gap-4">
-                              {data.institution.logo && (
-                                <img
-                                  src={data.institution.logo}
-                                  alt={data.institution.name}
-                                  className="w-12 h-12 rounded-lg object-cover border border-gray-200"
-                                />
-                              )}
-                              <div>
-                                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                                  <Building className="h-6 w-6 text-sky-500" />
-                                  {data.institution.name}
-                                </h2>
-                                <p className="text-gray-600">
-                                  {data.rooms.length} room
-                                  {data.rooms.length !== 1 ? "s" : ""} enrolled
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Rooms and Routine Layout */}
-                          <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
-                            {/* Rooms Grid */}
-                            <div className="lg:col-span-3">
-                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {data.rooms.map((room) => (
-                                  <Link
-                                    key={room._id}
-                                    to={`/student/room/${room._id}/forum`}
-                                    className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border border-base-300 group border-t-4 border-solid border-t-[#00A2E8]"
-                                  >
-                                    <div className="p-6">
-                                      <div className="flex items-start justify-between mb-2">
-                                        <h3 className="text-lg font-semibold text-base-content group-hover:text-primary">
-                                          {room.room_name}
-                                        </h3>
-                                        <BookOpen className="h-5 w-5 text-primary group-hover:text-primary" />
-                                      </div>
-                                      <p className="text-base-content/70 line-clamp-3 mb-4">
-                                        {room.description}
-                                      </p>
-
-                                      <div className="flex items-center justify-between text-sm text-base-content/60">
-                                        <div className="flex items-center gap-1">
-                                          <Calendar className="h-3 w-3" />
-                                          <span>
-                                            {formatDate(room.createdAt)}
-                                          </span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                          <Users className="h-3 w-3" />
-                                          <span>Enrolled</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </Link>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Class Routine */}
-                            <div className="lg:col-span-3">
-                              <ClassRoutine
-                                rooms={data.rooms}
-                                userType="student"
-                                userId={user?._id}
-                              />
-                            </div>
+            {Object.keys(roomsByInstitution).length > 0 ? (
+              <div className="space-y-8">
+                {Object.entries(roomsByInstitution)
+                  .filter(([institutionId]) => !selectedInstitution || institutionId === selectedInstitution)
+                  .map(([institutionId, data]) => (
+                    <div key={institutionId} className="space-y-6">
+                      {/* Institution Header */}
+                      <div className="mb-4 sm:mb-6 border-b border-base-300 pb-3 sm:pb-4">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          {data.institution.logo && (
+                            <img
+                              src={data.institution.logo}
+                              alt={data.institution.name}
+                              className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-base-300"
+                            />
+                          )}
+                          <div>
+                            <h2 className="text-xl sm:text-2xl font-bold text-base-content flex items-center gap-2">
+                              <Building className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                              {data.institution.name}
+                            </h2>
+                            <p className="text-sm sm:text-base text-base-content/60">
+                              {data.rooms.length} room{data.rooms.length !== 1 ? "s" : ""} enrolled
+                            </p>
                           </div>
                         </div>
-                      )
-                    )}
+                      </div>
 
-                    {/* Institution Announcements Widget */}
-                    <div className="mt-8">
-                      <InstitutionAnnouncementsWidget
-                        userType="student"
-                        userId={user?._id}
-                        institutionSlug={institutions[0]?.slug}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    <div className="text-center py-20">
-                      <BookOpen className="w-20 h-20 text-base-content/40 mx-auto mb-4" />
-                      <h3 className="text-xl font-medium text-base-content/70 mb-2">
-                        No enrolled rooms yet
-                      </h3>
-                      <p className="text-base-content/60 mb-6">
-                        You haven't been enrolled in any rooms yet. Contact your
-                        instructor to get started.
-                      </p>
-                    </div>
+                      {/* Enrolled Rooms Section */}
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-semibold text-base-content mb-3 sm:mb-4">Enrolled Rooms</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                          {data.rooms.map((room) => (
+                            <Link
+                              key={room._id}
+                              to={`/student/room/${room._id}/forum`}
+                              className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border border-base-300 group border-t-4 border-t-primary"
+                            >
+                              <div className="p-4 sm:p-6">
+                                <div className="flex items-start justify-between mb-2">
+                                  <h3 className="text-base sm:text-lg font-semibold text-base-content group-hover:text-primary">
+                                    {room.room_name}
+                                  </h3>
+                                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                                </div>
+                                <p className="text-base-content/70 line-clamp-2 mb-3 sm:mb-4 text-xs sm:text-sm">
+                                  {room.description}
+                                </p>
+                                <div className="flex items-center justify-between text-xs text-base-content/60">
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    <span className="text-xs">{formatDate(room.createdAt)}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Users className="h-3 w-3" />
+                                    <span className="text-xs">Enrolled</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
 
-                    {/* Show announcements even if no rooms */}
-                    <InstitutionAnnouncementsWidget
-                      userType="student"
-                      userId={user?._id}
-                      institutionSlug={institutions[0]?.slug}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Institutions Tab */}
-            {activeTab === "institutions" && (
-              <>
-                {institutions.length > 0 ? (
-                  <div>
-                    <div className="mb-6">
-                      <h2 className="text-xl font-semibold text-base-content mb-2">
-                        Your Institutions
-                      </h2>
-                      <p className="text-gray-600">
-                        Request documents from any of your associated
-                        institutions
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {institutions.map((institution) => (
-                        <InstitutionCard
-                          key={institution._id}
-                          institution={institution}
-                          onRequestSuccess={handleDocumentRequestSuccess}
+                      {/* Class Routine Section */}
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-semibold text-base-content mb-3 sm:mb-4">My Routine</h3>
+                        <ClassRoutine
+                          rooms={data.rooms}
+                          userType="student"
+                          userId={user?._id}
                         />
-                      ))}
+                      </div>
+
+                      {/* Action Buttons Section */}
+                      <div className="card bg-base-100 border border-base-300 p-4 sm:p-6">
+                        <h3 className="text-base sm:text-lg font-semibold text-base-content mb-3 sm:mb-4">Quick Actions</h3>
+                        <InstitutionCard
+                          institution={data.institution}
+                          onRequestSuccess={handleDocumentRequestSuccess}
+                          compact={true}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-20">
-                    <Building className="w-20 h-20 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-medium text-gray-600 mb-2">
-                      No institutions found
-                    </h3>
-                    <p className="text-gray-500 mb-6">
-                      You are not associated with any institutions yet. Contact
-                      your institution's admin to get enrolled.
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
+                  ))}
 
-            {/* Documents Tab */}
-            {activeTab === "documents" && (
-              <div className="text-center py-12">
-                <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-gray-600 mb-4">
-                  View Your Document Requests
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  Track the status of your document requests and manage
-                  completed documents.
-                </p>
-                <Link
-                  to="/student/documents"
-                  className="inline-flex items-center px-6 py-3 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition-colors font-medium"
-                >
-                  <FileText className="h-5 w-5 mr-2" />
-                  View All Documents
-                </Link>
+                {/* Institution Announcements Widget */}
+                <div className="mt-8">
+                  <InstitutionAnnouncementsWidget
+                    userType="student"
+                    userId={user?._id}
+                    institutionSlug={institutions[0]?.slug}
+                  />
+                </div>
               </div>
-            )}
+            ) : (
+              <div className="space-y-8">
+                <div className="text-center py-20">
+                  <BookOpen className="w-20 h-20 text-base-content/40 mx-auto mb-4" />
+                  <h3 className="text-xl font-medium text-base-content/70 mb-2">
+                    No enrolled rooms yet
+                  </h3>
+                  <p className="text-base-content/60 mb-6">
+                    You haven't been enrolled in any rooms yet. Contact your instructor to get started.
+                  </p>
+                </div>
 
-            {/* Support Tickets Tab */}
-            {activeTab === "support" && (
-              <div className="text-center py-12">
-                <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-gray-600 mb-4">
-                  Your Support Tickets
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  View and manage your support requests to institutions. Track
-                  responses and resolve issues.
-                </p>
-                <Link
-                  to="/student/support-tickets"
-                  className="inline-flex items-center px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium"
-                >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  View Support Tickets
-                </Link>
+                {/* Show announcements even if no rooms */}
+                {institutions[0]?.slug && (
+                  <InstitutionAnnouncementsWidget
+                    userType="student"
+                    userId={user?._id}
+                    institutionSlug={institutions[0].slug}
+                  />
+                )}
               </div>
             )}
           </>

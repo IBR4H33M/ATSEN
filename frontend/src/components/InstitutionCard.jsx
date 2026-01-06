@@ -4,10 +4,50 @@ import DocumentRequestForm from "./DocumentRequestForm";
 import SupportDeskForm from "./SupportDeskForm";
 import { useAuth } from "../contexts/AuthContext";
 
-const InstitutionCard = ({ institution, onRequestSuccess }) => {
+const InstitutionCard = ({ institution, onRequestSuccess, compact = false }) => {
   const { user } = useAuth();
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showSupportForm, setShowSupportForm] = useState(false);
+
+  // Compact mode - only show buttons
+  if (compact) {
+    return (
+      <>
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <button
+            onClick={() => setShowRequestForm(true)}
+            className="btn btn-primary flex-1"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Request Document
+          </button>
+          
+          <button
+            onClick={() => setShowSupportForm(true)}
+            className="btn btn-success flex-1"
+          >
+            <HelpCircle className="h-4 w-4 mr-2" />
+            Contact Support
+          </button>
+        </div>
+
+        <DocumentRequestForm
+          institution={institution}
+          isOpen={showRequestForm}
+          onClose={() => setShowRequestForm(false)}
+          onSuccess={onRequestSuccess}
+        />
+        
+        <SupportDeskForm
+          institution={institution}
+          isOpen={showSupportForm}
+          onClose={() => setShowSupportForm(false)}
+          onSuccess={() => setShowSupportForm(false)}
+          student={user}
+        />
+      </>
+    );
+  }
 
   return (
     <>

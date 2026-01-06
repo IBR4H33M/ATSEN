@@ -123,20 +123,19 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
         </div>
       ) : (
         <>
-          <div className="w-full">
-            <table className="w-full border-collapse text-sm table-fixed">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full border-collapse text-xs sm:text-sm min-w-[800px]">
               <thead>
                 <tr className="bg-gray-700 text-white">
-                  <th className="border border-gray-600 p-3 text-left font-medium w-[15%]">
-                    Time/Day
+                  <th className="border border-gray-600 p-2 sm:p-3 text-left font-medium min-w-[100px] sm:min-w-[120px]">
+                    <div className="text-xs sm:text-sm">Time/Day</div>
                   </th>
                   {days.map((day) => (
                     <th
                       key={day}
-                      className="border border-gray-600 p-3 text-center font-medium"
-                      style={{ width: `${85 / days.length}%` }}
+                      className="border border-gray-600 p-2 sm:p-3 text-center font-medium min-w-[90px] sm:min-w-[110px]"
                     >
-                      {day}
+                      <div className="text-xs sm:text-sm">{day.substring(0, 3)}</div>
                     </th>
                   ))}
                 </tr>
@@ -144,9 +143,9 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
               <tbody>
                 {timeSlots.map((slot, timeIndex) => (
                   <tr key={timeIndex} className="hover:bg-base-50">
-                    <td className="border border-gray-300 p-3 bg-gray-100 font-medium text-center">
-                      <div className="text-sm leading-tight">
-                        {slot.display}
+                    <td className="border border-gray-300 p-2 sm:p-3 bg-gray-100 font-medium text-center">
+                      <div className="text-xs sm:text-sm leading-tight whitespace-nowrap">
+                        {slot.start}<br className="sm:hidden" />-<br className="sm:hidden" />{slot.end}
                       </div>
                     </td>
                     {days.map((day) => {
@@ -154,17 +153,17 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
                       return (
                         <td
                           key={day}
-                          className="border border-gray-300 p-2 text-center"
+                          className="border border-gray-300 p-1 sm:p-2 text-center"
                         >
                           {classInfo ? (
-                            <div className="bg-gray-700 text-white rounded px-3 py-2 min-h-[50px] flex flex-col justify-center text-sm">
-                              <div className="font-medium leading-tight">
+                            <div className="bg-gray-700 text-white rounded px-2 py-2 sm:px-3 sm:py-2 min-h-[45px] sm:min-h-[50px] flex flex-col justify-center">
+                              <div className="font-medium leading-tight text-xs sm:text-sm">
                                 {classInfo.courseCode}
                               </div>
                             </div>
                           ) : (
-                            <div className="min-h-[50px] flex items-center justify-center">
-                              <span className="text-gray-400 text-sm">—</span>
+                            <div className="min-h-[45px] sm:min-h-[50px] flex items-center justify-center">
+                              <span className="text-gray-400 text-xs sm:text-sm">—</span>
                             </div>
                           )}
                         </td>
@@ -174,6 +173,11 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
                 ))}
               </tbody>
             </table>
+          </div>
+          
+          {/* Mobile scroll hint */}
+          <div className="mt-2 text-xs text-base-content/50 text-center sm:hidden">
+            ← Swipe to see full schedule →
           </div>
 
           {/* Legend */}
