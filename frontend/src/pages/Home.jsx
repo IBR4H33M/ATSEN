@@ -239,6 +239,100 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Dev Team Section */}
+      <div className="w-full bg-gray-100 py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800">The ATSEN Dev Team</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-10">
+            {/* Ibraheem */}
+            <div className="flex flex-col items-center text-center">
+              <img
+                src="/ibraheem.gif"
+                alt="Ibraheem Ibn Anwar"
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+              />
+              <a
+                href="https://github.com/IBR4H33M"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                aria-label="Ibraheem GitHub"
+              >
+                <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Ibraheem Ibn Anwar</h3>
+              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+                <li>Institution management system</li>
+                <li>URL routing</li>
+                <li>Access control management</li>
+                <li>Super admin management</li>
+                <li>Hosting and deployment</li>
+                <li>Search engine optimization</li>
+              </ul>
+            </div>
+
+            {/* Fuad */}
+            <div className="flex flex-col items-center text-center">
+              <img
+                src="/fuad.jpg"
+                alt="Fuad Fardin"
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+              />
+              <a
+                href="https://github.com/itsmefuad"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                aria-label="Fuad GitHub"
+              >
+                <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Fuad Fardin</h3>
+              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+                <li>Design and UI</li>
+                <li>Class room management</li>
+                <li>Classroom dashboard</li>
+                <li>Study resource management</li>
+                <li>Study timeline</li>
+              </ul>
+            </div>
+
+            {/* Jishnu */}
+            <div className="flex flex-col items-center text-center">
+              <img
+                src="/jishnu.png"
+                alt="Jishnu Kumar Bacchar"
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+              />
+              <a
+                href="https://github.com/JishnuB2027"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                aria-label="Jishnu GitHub"
+              >
+                <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Jishnu Kumar Bacchar</h3>
+              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+                <li>Login and authentication</li>
+                <li>In class chat system</li>
+                <li>Grading system</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -335,6 +335,15 @@ export default function App() {
           />
         </Routes>
       </PostLoginRedirect>
+        <footer
+          className={`w-full py-4 text-center text-sm border-t ${
+            theme === "dark"
+              ? "bg-gray-900 border-gray-800 text-gray-400"
+              : "bg-gray-800 border-gray-700 text-gray-300"
+          }`}
+        >
+          © {new Date().getFullYear()} ATSEN. All rights reserved.
+        </footer>
     </div>
   );
 }
