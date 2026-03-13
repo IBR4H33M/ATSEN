@@ -335,14 +335,21 @@ export default function App() {
           />
         </Routes>
       </PostLoginRedirect>
-        <footer
-          className={`w-full py-4 text-center text-sm border-t ${
-            theme === "dark"
-              ? "bg-gray-900 border-gray-800 text-gray-400"
-              : "bg-gray-800 border-gray-700 text-gray-300"
-          }`}
-        >
-          © {new Date().getFullYear()} ATSEN. All rights reserved.
+        <footer className="w-full border-t border-base-300 bg-base-200 text-base-content/60">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+            <div className="flex items-center gap-2 font-semibold text-base-content">
+              <span className="text-primary">ATSEN</span>
+              <span className="text-base-content/40">·</span>
+              <span className="font-normal text-base-content/60">Learning Management System</span>
+            </div>
+            <div className="flex items-center gap-6 text-base-content/50">
+              <a href="/" className="hover:text-base-content transition-colors">Home</a>
+              <a href="mailto:support@atsen.app" className="hover:text-base-content transition-colors">Contact</a>
+              <a href="#" className="hover:text-base-content transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-base-content transition-colors">Terms</a>
+            </div>
+            <p className="text-base-content/40">© {new Date().getFullYear()} ATSEN. All rights reserved.</p>
+          </div>
         </footer>
     </div>
   );

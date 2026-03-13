@@ -4,9 +4,8 @@ import { useParams, useNavigate, Link } from "react-router";
 import {
   Search,
   UserPlus,
-  ArrowLeft,
+  ChevronLeft,
   X,
-  Check,
   GraduationCap,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -89,7 +88,7 @@ export default function AddStudent() {
           to={`/${encodeURIComponent(idOrName)}/students`}
           className="p-2 text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">
@@ -128,7 +127,7 @@ export default function AddStudent() {
                   setSelectedStudent(null);
                   setError("");
                 }}
-                className="block w-full pl-10 pr-3 py-3 border border-base-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-base-100 text-base-content"
+                className="block w-full pl-10 pr-3 py-3 border border-base-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-base-200 text-base-content placeholder:text-base-content/40"
                 autoComplete="off"
               />
 
@@ -145,7 +144,7 @@ export default function AddStudent() {
                           setError("");
                         }}
                         className={`p-4 cursor-pointer hover:bg-base-200 border-b border-base-300 last:border-b-0 ${
-                          selectedStudent?._id === stu._id ? "bg-green-50" : ""
+                          selectedStudent?._id === stu._id ? "bg-primary/10" : ""
                         }`}
                       >
                         <div className="font-medium text-base-content">
@@ -213,10 +212,7 @@ export default function AddStudent() {
                   Adding...
                 </>
               ) : (
-                <>
-                  <Check className="h-5 w-5 mr-2" />
-                  Add to Institution
-                </>
+                "Add to Institution"
               )}
             </button>
 

@@ -21,7 +21,7 @@ export const createDocumentRequest = async (req, res) => {
     }
 
     // Check if student is associated with this institution
-    if (!student.institutions.includes(institutionId)) {
+    if (!student.institutions.some((e) => String(e.institution) === String(institutionId))) {
       return res.status(403).json({ 
         message: "You are not authorized to request documents from this institution" 
       });

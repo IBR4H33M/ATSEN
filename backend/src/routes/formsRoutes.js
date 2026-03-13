@@ -36,7 +36,7 @@ router.get("/", authMiddleware, async (req, res) => {
     if (req.user.role === "student") {
       const student = await Student.findById(req.user.id).select("institutions room");
       const studentRoomIds = (student?.room || []).map((entry) => String(entry));
-      const studentInstitutionIds = (student?.institutions || []).map((entry) => String(entry));
+      const studentInstitutionIds = (student?.institutions || []).map((entry) => String(entry.institution));
 
       forms = forms.filter((form) => {
         const sameInstitution = !form.institutionId || studentInstitutionIds.includes(String(form.institutionId._id || form.institutionId));
@@ -186,7 +186,7 @@ router.post("/:id/vote", authMiddleware, async (req, res) => {
     const student = await Student.findById(req.user.id).select("institutions room name");
     if (!student) return res.status(404).json({ message: "Student not found" });
 
-    const belongsToInstitution = (student.institutions || []).some((entry) => String(entry) === String(form.institutionId));
+    const belongsToInstitution = (student.institutions || []).some((entry) => String(entry.institution) === String(form.institutionId));
     if (!belongsToInstitution) {
       return res.status(403).json({ message: "Not permitted to respond to this form" });
     }

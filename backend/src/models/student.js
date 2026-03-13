@@ -18,11 +18,18 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // changed: institution is now an array so a student can belong to multiple institutions
+    // Each entry records which institution and when the student was added
     institutions: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Institution",
+        institution: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Institution",
+          required: true,
+        },
+        enrolledAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     // changed: room is now an array so a student can belong to multiple rooms

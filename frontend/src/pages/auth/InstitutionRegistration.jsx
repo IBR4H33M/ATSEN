@@ -206,7 +206,7 @@ export default function InstitutionRegistration() {
               to="/"
               className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
             >
-              ← Back to Home
+              &lt; Back to Home
             </Link>
           </div>
         </div>

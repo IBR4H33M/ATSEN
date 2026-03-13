@@ -315,7 +315,7 @@ const Navbar = () => {
                       <Link
                         to={getFormsLink()}
                         onClick={() => setIsDropdownOpen(false)}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                        className="w-full text-left px-4 py-2 text-sm text-base-content hover:bg-base-200 flex items-center space-x-2"
                       >
                         <BarChart3 className="h-4 w-4" />
                         <span>Forms</span>
@@ -325,7 +325,7 @@ const Navbar = () => {
                       <Link
                         to={getHelpDeskLink()}
                         onClick={() => setIsDropdownOpen(false)}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                        className="w-full text-left px-4 py-2 text-sm text-base-content hover:bg-base-200 flex items-center space-x-2"
                       >
                         <MessageSquare className="h-4 w-4" />
                         <span>Help Desk</span>

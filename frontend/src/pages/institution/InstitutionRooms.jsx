@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  ArrowLeft,
+  ChevronLeft,
   BookOpen,
   Plus,
   Users,
@@ -97,7 +97,7 @@ export default function InstitutionRooms() {
             to={`/${encodeURIComponent(idOrName)}`}
             className="p-2 text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">

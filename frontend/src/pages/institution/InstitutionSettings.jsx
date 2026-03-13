@@ -4,7 +4,7 @@ import {
   Settings,
   Save,
   Edit3,
-  ArrowLeft,
+  ChevronLeft,
   Building,
   Phone,
   MapPin,
@@ -107,7 +107,7 @@ export default function InstitutionSettings() {
           to={`/${encodeURIComponent(idOrName)}`}
           className="btn btn-ghost btn-sm"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">

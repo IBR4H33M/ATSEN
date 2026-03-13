@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useLocation, useNavigate } from "react-router";
 import {
-  ArrowLeft,
+  ChevronLeft,
   Loader,
   BookOpen,
   Calendar,
@@ -117,10 +117,10 @@ const S_Room = () => {
     <div className="min-h-screen bg-base-200">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        {/* Back to Dashboard Button - Floating left */}
-        <div className="mb-6 flex justify-start">
-          <Link to="/student/dashboard" className="btn btn-ghost">
-            <ArrowLeft className="h-5 w-5 mr-2" />
+        {/* Back to Dashboard Button */}
+        <div className="mb-6">
+          <Link to="/student/dashboard" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-base-content/70 hover:text-base-content rounded-md hover:bg-base-100 border border-base-300 transition-colors">
+            <ChevronLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
         </div>

@@ -172,7 +172,7 @@ const S_AssignmentDetail = () => {
               to={`/student/room/${id}/assessment`}
               className="btn btn-ghost btn-sm mb-4"
             >
-              ← Back to Assessments
+              &lt; Back to Assessments
             </Link>
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body">

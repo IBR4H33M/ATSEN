@@ -54,9 +54,9 @@ export const getAnnouncementsForUser = async (req, res) => {
       const Student = await import("../models/student.js").then(
         (m) => m.default
       );
-      const user = await Student.findById(userId).populate("institutions");
+      const user = await Student.findById(userId);
       if (user) {
-        userInstitutions = user.institutions.map((inst) => inst._id);
+        userInstitutions = user.institutions.map((entry) => entry.institution);
       }
     } else if (userType === "instructor") {
       const Instructor = await import("../models/instructor.js").then(

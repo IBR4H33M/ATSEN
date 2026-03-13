@@ -5,7 +5,7 @@ const RoomCard = ({ room }) => {
   return (
     <Link
       to={`/teacher/room/${room._id}/forum`}
-      className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border border-base-300 group border-t-4 border-solid border-t-[#00A2E8]"
+      className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border-2 border-[#00A2E8]/40 hover:border-[#00A2E8] group"
     >
       <div className="p-6">
         <h3 className="text-lg font-semibold text-base-content mb-2">

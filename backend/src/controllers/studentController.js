@@ -78,7 +78,7 @@ export async function getStudentRooms(req, res) {
 
     const student = await Student.findById(studentId)
       .populate({
-        path: "institutions",
+        path: "institutions.institution",
         select: "name logo",
       })
       .populate({
@@ -97,7 +97,11 @@ export async function getStudentRooms(req, res) {
     // Group rooms by institution
     const roomsByInstitution = {};
 
-    student.institutions.forEach((institution) => {
+    student.institutions.forEach((entry) => {
+      // entry.institution is the populated Institution doc
+      const institution = entry.institution;
+      if (!institution) return;
+
       const institutionRooms = student.room.filter(
         (room) =>
           room.institution &&
@@ -121,8 +125,9 @@ export async function getStudentRooms(req, res) {
       });
 
       if (filteredRooms.length > 0) {
+        // Flatten: expose institution fields directly, add enrolledAt
         roomsByInstitution[institution._id] = {
-          institution: institution,
+          institution: { ...institution.toObject(), enrolledAt: entry.enrolledAt },
           rooms: filteredRooms,
         };
       }
@@ -142,8 +147,8 @@ export async function getStudentById(req, res) {
 
     const student = await Student.findById(studentId, "-password")
       .populate({
-        path: "institutions",
-        select: "name eiin email address description",
+        path: "institutions.institution",
+        select: "name eiin email address description slug",
       })
       .populate({
         path: "room",
@@ -154,7 +159,13 @@ export async function getStudentById(req, res) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    return res.json(student);
+    // Flatten institutions: expose institution fields directly + enrolledAt
+    const result = student.toObject();
+    result.institutions = result.institutions
+      .filter((entry) => entry.institution)
+      .map((entry) => ({ ...entry.institution, enrolledAt: entry.enrolledAt }));
+
+    return res.json(result);
   } catch (err) {
     console.error("getStudentById error:", err);
     return res.status(500).json({ message: "Server error" });

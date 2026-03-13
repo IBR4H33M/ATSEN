@@ -134,7 +134,7 @@ export default function StudentSignup() {
               to="/auth/signup"
               className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
             >
-              ← Back to role selection
+              &lt; Back to role selection
             </Link>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import Navbar from "../../components/Navbar.jsx";
 import { 
-  ArrowLeft, 
+  ChevronLeft, 
   Calendar, 
   User, 
   Tag, 
@@ -147,9 +147,9 @@ export default function InstitutionAnnouncementDetail() {
           <div className="flex items-center gap-4 mb-4">
             <Link 
               to={user?.role === "instructor" ? "/teacher/dashboard" : `/${idOrName}/dashboard`}
-              className="btn btn-ghost btn-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-base-content/70 hover:text-base-content rounded-md hover:bg-base-100 border border-base-300 transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back to Dashboard
             </Link>
           </div>

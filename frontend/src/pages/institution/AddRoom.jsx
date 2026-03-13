@@ -1,7 +1,7 @@
 // frontend/src/pages/institution/AddRoom.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Plus, Home } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import SectionManager from "../../components/SectionManager.jsx";
 import api from "../../lib/axios";
 
@@ -180,7 +180,7 @@ export default function AddRoom() {
           to={`/${encodeURIComponent(idOrName)}/dashboard`}
           className="p-2 text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-base-content flex items-center gap-3">
@@ -451,7 +451,6 @@ export default function AddRoom() {
             type="submit"
             className="btn btn-primary px-6 py-3 font-medium"
           >
-            <Home className="h-5 w-5 mr-2" />
             Create Room
           </button>
 

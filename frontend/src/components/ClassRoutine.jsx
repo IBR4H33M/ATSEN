@@ -124,16 +124,16 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
       ) : (
         <>
           <div className="w-full overflow-x-auto">
-            <table className="w-full border-collapse text-xs sm:text-sm min-w-[800px]">
+            <table className="w-full border-collapse text-xs sm:text-sm min-w-[800px] text-base-content">
               <thead>
-                <tr className="bg-gray-700 text-white">
-                  <th className="border border-gray-600 p-2 sm:p-3 text-left font-medium min-w-[100px] sm:min-w-[120px]">
+                <tr className="bg-base-300 text-base-content">
+                  <th className="border border-base-300 p-2 sm:p-3 text-left font-medium min-w-[100px] sm:min-w-[120px]">
                     <div className="text-xs sm:text-sm">Time/Day</div>
                   </th>
                   {days.map((day) => (
                     <th
                       key={day}
-                      className="border border-gray-600 p-2 sm:p-3 text-center font-medium min-w-[90px] sm:min-w-[110px]"
+                      className="border border-base-300 p-2 sm:p-3 text-center font-medium min-w-[90px] sm:min-w-[110px]"
                     >
                       <div className="text-xs sm:text-sm">{day.substring(0, 3)}</div>
                     </th>
@@ -142,8 +142,8 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
               </thead>
               <tbody>
                 {timeSlots.map((slot, timeIndex) => (
-                  <tr key={timeIndex} className="hover:bg-base-50">
-                    <td className="border border-gray-300 p-2 sm:p-3 bg-gray-100 font-medium text-center">
+                  <tr key={timeIndex} className="hover:bg-base-200/60">
+                    <td className="border border-base-300 p-2 sm:p-3 bg-base-200 font-medium text-base-content text-center">
                       <div className="text-xs sm:text-sm leading-tight whitespace-nowrap">
                         {slot.start}<br className="sm:hidden" />-<br className="sm:hidden" />{slot.end}
                       </div>
@@ -153,17 +153,17 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
                       return (
                         <td
                           key={day}
-                          className="border border-gray-300 p-1 sm:p-2 text-center"
+                          className="border border-base-300 p-1 sm:p-2 text-center"
                         >
                           {classInfo ? (
-                            <div className="bg-gray-700 text-white rounded px-2 py-2 sm:px-3 sm:py-2 min-h-[45px] sm:min-h-[50px] flex flex-col justify-center">
+                            <div className="bg-primary text-primary-content rounded px-2 py-2 sm:px-3 sm:py-2 min-h-[45px] sm:min-h-[50px] flex flex-col justify-center">
                               <div className="font-medium leading-tight text-xs sm:text-sm">
                                 {classInfo.courseCode}
                               </div>
                             </div>
                           ) : (
                             <div className="min-h-[45px] sm:min-h-[50px] flex items-center justify-center">
-                              <span className="text-gray-400 text-xs sm:text-sm">—</span>
+                              <span className="text-base-content/40 text-xs sm:text-sm">—</span>
                             </div>
                           )}
                         </td>
@@ -177,13 +177,13 @@ const ClassRoutine = ({ rooms, userType = "student", userId = null }) => {
           
           {/* Mobile scroll hint */}
           <div className="mt-2 text-xs text-base-content/50 text-center sm:hidden">
-            ← Swipe to see full schedule →
+            &lt; Swipe to see full schedule &gt;
           </div>
 
           {/* Legend */}
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-base-content/60">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-700 rounded"></div>
+              <div className="w-4 h-4 bg-primary rounded"></div>
               <span>My Classes</span>
             </div>
             <div className="flex items-center gap-2">

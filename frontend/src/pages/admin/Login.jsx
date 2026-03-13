@@ -117,7 +117,7 @@ export default function Login() {
 
               <div className="text-center mt-6">
                 <Link to="/auth/login" className="link link-primary text-sm">
-                  ← Back to General Login
+                  &lt; Back to General Login
                 </Link>
               </div>
             </div>

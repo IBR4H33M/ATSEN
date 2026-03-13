@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { 
-  ArrowLeft, 
+  ChevronLeft, 
   Filter, 
   Search, 
   MessageCircle, 
@@ -219,9 +219,9 @@ const InstitutionSupportDesk = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate(-1)}
-                className="p-2 hover:bg-base-300 rounded-lg transition-colors"
+                className="p-2 text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
               <div>
                 <h1 className="text-3xl font-bold text-base-content">Support Desk</h1>

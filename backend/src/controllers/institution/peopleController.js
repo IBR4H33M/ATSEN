@@ -141,7 +141,7 @@ export async function addStudent(req, res) {
     }
 
     const alreadyLinked = (student.institutions || [])
-      .map(id => id.toString())
+      .map(entry => entry.institution.toString())
       .includes(inst._id.toString());
 
     if (alreadyLinked) {
@@ -149,7 +149,7 @@ export async function addStudent(req, res) {
     }
 
     student.institutions = student.institutions || [];
-    student.institutions.push(inst._id);
+    student.institutions.push({ institution: inst._id, enrolledAt: new Date() });
     await student.save();
 
     res.json({ message: "Student added to institution successfully." });
@@ -180,7 +180,7 @@ export async function removeStudent(req, res) {
     }
 
     student.institutions = (student.institutions || [])
-      .filter(id => id.toString() !== inst._id.toString());
+      .filter(entry => entry.institution.toString() !== inst._id.toString());
     await student.save();
 
     res.json({ message: "Student removed from institution successfully." });

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useLocation } from "react-router";
 import api from "../../lib/axios";
 import {
-  ArrowLeft,
+  ChevronLeft,
   Loader,
   Info,
   MessageSquare,
@@ -120,9 +120,9 @@ const T_Room = () => {
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         {/* Back to Dashboard Button */}
-        <div className="mb-6 flex justify-start">
-          <Link to="/teacher/dashboard" className="btn btn-ghost">
-            <ArrowLeft className="h-5 w-5 mr-2" />
+        <div className="mb-6">
+          <Link to="/teacher/dashboard" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-base-content/70 hover:text-base-content rounded-md hover:bg-base-100 border border-base-300 transition-colors">
+            <ChevronLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
         </div>

@@ -161,7 +161,7 @@ const S_Dashboard = () => {
                             <Link
                               key={room._id}
                               to={`/student/room/${room._id}/forum`}
-                              className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border border-base-300 group border-t-4 border-t-primary"
+                              className="card bg-base-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 border-2 border-primary/40 hover:border-primary group"
                             >
                               <div className="p-4 sm:p-6">
                                 <div className="flex items-start justify-between mb-2">
