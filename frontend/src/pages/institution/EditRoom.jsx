@@ -162,16 +162,12 @@ export default function EditRoom() {
     }
 
     try {
-      const res = await fetch(
+      const res = await api.get(
         `/institutions/${encodeURIComponent(
           idOrName
-        )}/students?search=${encodeURIComponent(query)}`
+        )}/rooms/${roomId}/search-students?search=${encodeURIComponent(query)}`
       );
-      const students = await res.json();
-      const filtered = students
-        .filter((s) => s.email.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 5);
-      setStudentResults(filtered);
+      setStudentResults((res.data || []).slice(0, 5));
     } catch (err) {
       console.error("Search students failed:", err);
     }
@@ -184,16 +180,14 @@ export default function EditRoom() {
     }
 
     try {
-      const res = await fetch(
+      const res = await api.get(
         `/institutions/${encodeURIComponent(
           idOrName
-        )}/instructors?search=${encodeURIComponent(query)}`
+        )}/rooms/${roomId}/search-instructors?search=${encodeURIComponent(
+          query
+        )}`
       );
-      const instructors = await res.json();
-      const filtered = instructors
-        .filter((i) => i.email.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 5);
-      setInstructorResults(filtered);
+      setInstructorResults((res.data || []).slice(0, 5));
     } catch (err) {
       console.error("Search instructors failed:", err);
     }

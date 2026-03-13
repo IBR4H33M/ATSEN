@@ -187,7 +187,7 @@ export default function AddInstructor() {
             <button
               type="submit"
               disabled={!selectedInstructor || loading}
-              className="flex items-center px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex items-center px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {loading ? (
                 <>

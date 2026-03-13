@@ -205,7 +205,7 @@ export default function AddStudent() {
             <button
               type="submit"
               disabled={!selectedStudent || loading}
-              className="flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {loading ? (
                 <>

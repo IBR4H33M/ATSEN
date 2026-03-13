@@ -1,17 +1,101 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building, Clock, CheckCircle, XCircle, Calendar, Shield, Activity, AlertCircle } from "lucide-react";
 import api from "../../lib/axios";
 import Navbar from "../../components/Navbar";
+
+// ── Toast notification ────────────────────────────────────────────────────────
+function Toast({ toast, onClose }) {
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(onClose, 3500);
+    return () => clearTimeout(t);
+  }, [toast, onClose]);
+
+  if (!toast) return null;
+
+  const colors = {
+    success: "alert-success",
+    error: "alert-error",
+    info: "alert-info",
+  };
+
+  return (
+    <div className="toast toast-top toast-center z-[9999]">
+      <div className={`alert ${colors[toast.type] ?? "alert-info"} shadow-lg flex flex-row items-center gap-3 max-w-sm w-max`}>
+        <span className="flex-1">{toast.message}</span>
+        <button className="btn btn-neutral btn-circle btn-xs shrink-0 text-neutral-content" onClick={onClose}>✕</button>
+      </div>
+    </div>
+  );
+}
+
+// ── Confirm modal ─────────────────────────────────────────────────────────────
+function ConfirmModal({ modal, onConfirm, onCancel }) {
+  if (!modal) return null;
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg text-base-content mb-2">{modal.title}</h3>
+        <p className="text-base-content/70">{modal.message}</p>
+        <div className="modal-action">
+          <button className="btn btn-neutral text-neutral-content" onClick={onCancel}>Cancel</button>
+          <button className={`btn ${modal.danger ? "btn-error text-error-content" : "btn-primary text-primary-content"}`} onClick={onConfirm}>
+            {modal.confirmLabel ?? "Confirm"}
+          </button>
+        </div>
+      </div>
+      <div className="modal-backdrop" onClick={onCancel} />
+    </div>
+  );
+}
+
+// ── Reject-reason modal ───────────────────────────────────────────────────────
+function RejectModal({ open, onConfirm, onCancel }) {
+  const [reason, setReason] = useState("");
+  if (!open) return null;
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg text-base-content mb-2">Reject Institution</h3>
+        <p className="text-base-content/70 mb-4">Provide a reason for rejection (optional).</p>
+        <textarea
+          className="textarea textarea-bordered w-full"
+          rows={3}
+          placeholder="Reason…"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+        <div className="modal-action">
+          <button className="btn btn-neutral text-neutral-content" onClick={onCancel}>Cancel</button>
+          <button className="btn btn-error text-error-content" onClick={() => onConfirm(reason)}>Reject</button>
+        </div>
+      </div>
+      <div className="modal-backdrop" onClick={onCancel} />
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const [institutions, setInstitutions] = useState([]);
   const [pendingInstitutions, setPendingInstitutions] = useState([]);
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'approved'
+  const [activeTab, setActiveTab] = useState('pending');
   const navigate = useNavigate();
   const tabsRef = useRef(null);
+
+  // Modal / toast state
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null); // { title, message, danger, confirmLabel, onConfirm }
+  const [rejectModal, setRejectModal] = useState(null);  // { id }
+
+  const showToast = useCallback((message, type = "info") => {
+    setToast({ message, type });
+  }, []);
+
+  const openConfirm = (opts) => setConfirmModal(opts);
+  const closeConfirm = () => setConfirmModal(null);
 
   useEffect(() => {
     fetchData();
@@ -41,54 +125,86 @@ export default function Dashboard() {
 
   const handleApprove = async (id) => {
     try {
-      const response = await api.post(`/admin/institutions/${id}/approve`);
-      alert(`✅ Institution approved successfully!\nThe institution can now log in using their email and password.`);
-      fetchData(); // Refresh data
+      await api.post(`/admin/institutions/${id}/approve`);
+      showToast("Institution approved successfully! They can now log in.", "success");
+      fetchData();
     } catch (error) {
       console.error("Error approving institution:", error);
-      alert("Failed to approve institution. Please try again.");
+      showToast("Failed to approve institution. Please try again.", "error");
     }
   };
 
-  const handleReject = async (id) => {
-    const reason = prompt("Please provide a reason for rejection (optional):");
+  const handleReject = (id) => {
+    setRejectModal({ id });
+  };
+
+  const confirmReject = async (reason) => {
+    const { id } = rejectModal;
+    setRejectModal(null);
     try {
       await api.post(`/admin/institutions/${id}/reject`, { reason });
-      alert("Institution rejected successfully.");
-      fetchData(); // Refresh data
+      showToast("Institution rejected successfully.", "info");
+      fetchData();
     } catch (error) {
       console.error("Error rejecting institution:", error);
-      alert("Failed to reject institution. Please try again.");
+      showToast("Failed to reject institution. Please try again.", "error");
     }
   };
 
-  const handleDeleteInstitution = async (id) => {
-    if (!confirm('Delete this institution permanently?')) return;
-    try {
-      await api.delete(`/admin/institutions/${id}`);
-      alert('Institution deleted');
-      fetchData();
-    } catch (err) {
-      console.error('Error deleting institution:', err);
-      alert('Failed to delete institution');
-    }
+  const handleDeleteInstitution = (id) => {
+    openConfirm({
+      title: "Delete Institution",
+      message: "Are you sure you want to permanently delete this institution? This action cannot be undone.",
+      danger: true,
+      confirmLabel: "Delete",
+      onConfirm: async () => {
+        closeConfirm();
+        try {
+          await api.delete(`/admin/institutions/${id}`);
+          showToast("Institution deleted.", "success");
+          fetchData();
+        } catch (err) {
+          console.error('Error deleting institution:', err);
+          showToast("Failed to delete institution.", "error");
+        }
+      },
+    });
   };
 
-  const handleToggleActive = async (id, currentActive) => {
+  const handleToggleActive = (id, currentActive) => {
     const action = currentActive ? 'deactivate' : 'activate';
-    if (!confirm(`Are you sure you want to ${action} this institution?`)) return;
-    try {
-      await api.patch(`/admin/institutions/${id}/active`, { active: !currentActive });
-      alert(`Institution ${action}d`);
-      fetchData();
-    } catch (err) {
-      console.error('Error toggling active state:', err);
-      alert('Failed to update institution state');
-    }
+    openConfirm({
+      title: `${action.charAt(0).toUpperCase() + action.slice(1)} Institution`,
+      message: `Are you sure you want to ${action} this institution?`,
+      danger: currentActive,
+      confirmLabel: action.charAt(0).toUpperCase() + action.slice(1),
+      onConfirm: async () => {
+        closeConfirm();
+        try {
+          await api.patch(`/admin/institutions/${id}/active`, { active: !currentActive });
+          showToast(`Institution ${action}d successfully.`, "success");
+          fetchData();
+        } catch (err) {
+          console.error('Error toggling active state:', err);
+          showToast("Failed to update institution state.", "error");
+        }
+      },
+    });
   };
 
   return (
     <div className="min-h-screen bg-base-200">
+      <Toast toast={toast} onClose={() => setToast(null)} />
+      <ConfirmModal
+        modal={confirmModal}
+        onConfirm={() => confirmModal?.onConfirm?.()}
+        onCancel={closeConfirm}
+      />
+      <RejectModal
+        open={!!rejectModal}
+        onConfirm={confirmReject}
+        onCancel={() => setRejectModal(null)}
+      />
       <Navbar />
       <div className="max-w-7xl mx-auto p-4 mt-6">
         <div className="mb-8">
@@ -335,6 +451,18 @@ export default function Dashboard() {
                           <div className="flex items-center">
                             <span className="font-medium text-base-content/80 min-w-[50px]">Email:</span>
                             <span className="ml-2 text-base-content/70 truncate">{institution.superadminEmail || ''}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="font-medium text-base-content/80 min-w-[80px]">Rooms:</span>
+                            <span className="ml-2 text-base-content/70">{institution.roomCount ?? 0}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="font-medium text-base-content/80 min-w-[80px]">Students:</span>
+                            <span className="ml-2 text-base-content/70">{institution.studentCount ?? 0}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="font-medium text-base-content/80 min-w-[80px]">Instructors:</span>
+                            <span className="ml-2 text-base-content/70">{institution.instructorCount ?? 0}</span>
                           </div>
                           <div className="flex items-center">
                             <Calendar className="h-4 w-4 text-base-content/60 mr-2" />

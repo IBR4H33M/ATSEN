@@ -151,12 +151,12 @@ export default function I_Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Link
           to={`/${encodeURIComponent(idOrName)}/rooms`}
-          className="card bg-base-100 hover:bg-blue-50 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-blue-300 group p-6"
+          className="card bg-base-100 hover:brightness-110 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-blue-300 group p-6"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-base-content/70 group-hover:text-blue-600">
-                Total Rooms
+                Rooms
               </p>
               <p className="text-3xl font-bold text-base-content group-hover:text-blue-700">
                 {data.totalRooms ?? 0}
@@ -168,12 +168,12 @@ export default function I_Dashboard() {
 
         <Link
           to={`/${encodeURIComponent(idOrName)}/students`}
-          className="card bg-base-100 hover:bg-green-50 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-green-300 group p-6"
+          className="card bg-base-100 hover:brightness-110 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-green-300 group p-6"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-base-content/70 group-hover:text-green-600">
-                Active Students
+                Students
               </p>
               <p className="text-3xl font-bold text-base-content group-hover:text-green-700">
                 {data.activeStudents ?? 0}
@@ -185,12 +185,12 @@ export default function I_Dashboard() {
 
         <Link
           to={`/${encodeURIComponent(idOrName)}/instructors`}
-          className="card bg-base-100 hover:bg-purple-50 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-purple-300 group p-6"
+          className="card bg-base-100 hover:brightness-110 hover:shadow-lg transition-all duration-200 border border-base-300 hover:border-purple-300 group p-6"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-base-content/70 group-hover:text-purple-600">
-                Total Instructors
+                Instruvctors
               </p>
               <p className="text-3xl font-bold text-base-content group-hover:text-purple-700">
                 {data.totalInstructors ?? 0}

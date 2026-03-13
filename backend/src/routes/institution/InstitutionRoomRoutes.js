@@ -13,6 +13,8 @@ import {
   removeInstructorFromRoom,
   addStudentToRoom,
   addInstructorToRoom,
+  searchAvailableStudentsForRoom,
+  searchAvailableInstructorsForRoom,
   updateRoomInfo,
 } from "../../controllers/institution/roomController.js";
 
@@ -53,6 +55,10 @@ router.post("/:roomId/add-student", addStudentToRoom);
 router.post("/:roomId/add-instructor", addInstructorToRoom);
 router.post("/:roomId/remove-student", removeStudentFromRoom);
 router.post("/:roomId/remove-instructor", removeInstructorFromRoom);
+
+// Search available institution users by email (excluding users already in room)
+router.get("/:roomId/search-students", searchAvailableStudentsForRoom);
+router.get("/:roomId/search-instructors", searchAvailableInstructorsForRoom);
 
 // New section-based user management
 router.post("/:roomId/assign-student-section", assignStudentToSection);

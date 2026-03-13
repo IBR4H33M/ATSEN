@@ -5,6 +5,9 @@ import slugify from "slugify";
 import DevAdmin from "../models/Admin.js";
 import Institution from "../models/institution.js";
 import PendingInstitute from "../models/PendingInstitute.js";
+import Room from "../models/Room.js";
+import Student from "../models/student.js";
+import Instructor from "../models/instructor.js";
 import mongoose from "mongoose";
 import { Redis } from '@upstash/redis';
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
@@ -191,8 +194,25 @@ export async function getAllInstitutions(req, res) {
     const institutions = await Institution.find({})
       .select('name eiin superadminEmail active createdAt')
       .sort({ createdAt: -1 });
+
+    const institutionsWithCounts = await Promise.all(
+      institutions.map(async (institution) => {
+        const [roomCount, studentCount, instructorCount] = await Promise.all([
+          Room.countDocuments({ institution: institution._id }),
+          Student.countDocuments({ institutions: institution._id }),
+          Instructor.countDocuments({ institutions: institution._id }),
+        ]);
+
+        return {
+          ...institution.toObject(),
+          roomCount,
+          studentCount,
+          instructorCount,
+        };
+      })
+    );
     
-    res.json(institutions);
+    res.json(institutionsWithCounts);
   } catch (error) {
     console.error("Error fetching institutions:", error);
     res.status(500).json({ message: "Failed to fetch institutions" });

@@ -245,6 +245,108 @@ export async function addInstructorToRoom(req, res) {
   }
 }
 
+// Search institution students by email who are not already in this room
+export async function searchAvailableStudentsForRoom(req, res) {
+  try {
+    const { idOrName, roomId } = req.params;
+    const { search = "" } = req.query;
+
+    const institution = await findInstitutionByIdOrName(idOrName);
+    if (!institution) {
+      return res.status(404).json({ message: "Institution not found." });
+    }
+
+    const room = await Room.findById(roomId).select("institution students");
+    if (!room) {
+      return res.status(404).json({ message: "Room not found." });
+    }
+
+    if (
+      room.institution &&
+      room.institution.toString() !== institution._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Room doesn't belong to this institution." });
+    }
+
+    const term = search.trim();
+    const roomStudentIds = (room.students || []).map((id) => id.toString());
+
+    const filter = {
+      institutions: institution._id,
+      _id: { $nin: roomStudentIds },
+    };
+
+    if (term) {
+      filter.email = { $regex: term, $options: "i" };
+    }
+
+    const students = await Student.find(filter)
+      .select("name email institutions")
+      .sort({ email: 1 })
+      .limit(20)
+      .lean();
+
+    return res.json(students);
+  } catch (err) {
+    console.error("Search available students error:", err);
+    return res.status(500).json({ message: "Server error." });
+  }
+}
+
+// Search institution instructors by email who are not already in this room
+export async function searchAvailableInstructorsForRoom(req, res) {
+  try {
+    const { idOrName, roomId } = req.params;
+    const { search = "" } = req.query;
+
+    const institution = await findInstitutionByIdOrName(idOrName);
+    if (!institution) {
+      return res.status(404).json({ message: "Institution not found." });
+    }
+
+    const room = await Room.findById(roomId).select("institution instructors");
+    if (!room) {
+      return res.status(404).json({ message: "Room not found." });
+    }
+
+    if (
+      room.institution &&
+      room.institution.toString() !== institution._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Room doesn't belong to this institution." });
+    }
+
+    const term = search.trim();
+    const roomInstructorIds = (room.instructors || []).map((id) =>
+      id.toString()
+    );
+
+    const filter = {
+      institutions: institution._id,
+      _id: { $nin: roomInstructorIds },
+    };
+
+    if (term) {
+      filter.email = { $regex: term, $options: "i" };
+    }
+
+    const instructors = await Instructor.find(filter)
+      .select("name email institutions")
+      .sort({ email: 1 })
+      .limit(20)
+      .lean();
+
+    return res.json(instructors);
+  } catch (err) {
+    console.error("Search available instructors error:", err);
+    return res.status(500).json({ message: "Server error." });
+  }
+}
+
 // Update room information (name, description, and sections)
 export async function updateRoomInfo(req, res) {
   try {

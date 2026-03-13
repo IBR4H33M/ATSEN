@@ -2,12 +2,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { useTheme } from "../contexts/ThemeContext.jsx";
 import Navbar from "../components/Navbar.jsx";
 import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function Home() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { isDarkMode } = useTheme();
   usePageTitle("Educational Management Platform for Institutions & Students");
 
   const handleLogin = () => {
@@ -28,21 +30,14 @@ export default function Home() {
       <div className="min-h-screen bg-base-200">
         <Navbar />
         
-        {/* Hero Section with Full Image */}
+        {/* Hero Section */}
         <div className="relative">
-          <div className="w-full">
-            <img 
-              src="/BlueHomeAbstract.webp" 
-              alt="ATSEN Platform" 
-              className="w-full h-[70vh] object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-30" />
-          </div>
+          <div className={`w-full h-[70vh] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`} />
 
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="loading loading-spinner loading-lg text-white"></div>
-              <p className="mt-2 text-white">Loading...</p>
+              <div className={`loading loading-spinner loading-lg ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}></div>
+              <p className={`mt-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>Loading...</p>
             </div>
           </div>
         </div>
@@ -66,18 +61,10 @@ export default function Home() {
     <div className="min-h-screen bg-base-200">
       <Navbar />
       
-      {/* Hero Section with Full Image */}
+      {/* Hero Section */}
       <div className="relative">
-        {/* Full Width Image */}
-        <div className="w-full">
-          <img 
-            src="/BlueHomeAbstract.webp" 
-            alt="ATSEN Platform" 
-            className="w-full h-[70vh] object-cover object-center"
-          />
-          {/* Optional overlay for better text readability */}
-          <div className="absolute inset-0 bg-black bg-opacity-30" />
-        </div>
+        {/* Theme-aware background */}
+        <div className={`w-full h-[70vh] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`} />
 
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -85,12 +72,12 @@ export default function Home() {
             {/* Left Section */}
             <div className={user ? "flex-1" : "flex-1 pr-8"}>
               <div className="animate-fade-in-up">
-                <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" style={{fontFamily: 'Consolas, monospace'}}>
-                  <span className="text-white font-extrabold" style={{fontFamily: 'Consolas, monospace'}}>
+                <h1 className={`text-5xl lg:text-6xl font-bold mb-6 leading-tight ${isDarkMode ? "text-gray-100" : "text-gray-800"}`} style={{fontFamily: 'Consolas, monospace'}}>
+                  <span className={`font-extrabold ${isDarkMode ? "text-gray-100" : "text-gray-800"}`} style={{fontFamily: 'Consolas, monospace'}}>
                     Welcome to ATSEN
                   </span>
                 </h1>
-                <p className="text-lg text-gray-200 mt-4 font-light animate-fade-in-delayed-2">
+                <p className={`text-lg mt-4 font-light animate-fade-in-delayed-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                   The comprehensive Learning Management System (LMS) for schools, colleges, and universities. Streamline student enrollment, course management, and academic administration.
                 </p>
                 
@@ -110,7 +97,7 @@ export default function Home() {
               {/* Show additional content for logged-in users */}
               {user && (
                 <div className="mt-10 animate-fade-in-delayed-3">
-                  <p className="text-white text-2xl mb-6 font-light">
+                  <p className={`text-2xl mb-6 font-light ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>
                     Welcome back, <span className="font-semibold">{user.name || "User"}</span>!
                   </p>
                   <button
@@ -241,10 +228,10 @@ export default function Home() {
       </div>
 
       {/* Dev Team Section */}
-      <div className="w-full bg-gray-100 py-16">
+      <div className={`w-full py-16 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800">The ATSEN Dev Team</h2>
+            <h2 className={`text-4xl font-bold ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>Meet the ATSEN Dev Team</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
@@ -253,21 +240,21 @@ export default function Home() {
               <img
                 src="/ibraheem.gif"
                 alt="Ibraheem Ibn Anwar"
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+                className={`w-32 h-32 rounded-full object-cover border-4 shadow-md mb-4 ${isDarkMode ? "border-gray-600" : "border-white"}`}
               />
               <a
                 href="https://github.com/IBR4H33M"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                className={`mb-3 transition-colors ${isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
                 aria-label="Ibraheem GitHub"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
                 </svg>
               </a>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Ibraheem Ibn Anwar</h3>
-              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+              <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>Ibraheem Ibn Anwar</h3>
+              <ul className={`text-left space-y-1 text-sm list-disc list-inside ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 <li>Institution management system</li>
                 <li>URL routing</li>
                 <li>Access control management</li>
@@ -282,21 +269,21 @@ export default function Home() {
               <img
                 src="/fuad.jpg"
                 alt="Fuad Fardin"
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+                className={`w-32 h-32 rounded-full object-cover border-4 shadow-md mb-4 ${isDarkMode ? "border-gray-600" : "border-white"}`}
               />
               <a
                 href="https://github.com/itsmefuad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                className={`mb-3 transition-colors ${isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
                 aria-label="Fuad GitHub"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
                 </svg>
               </a>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Fuad Fardin</h3>
-              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+              <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>Fuad Fardin</h3>
+              <ul className={`text-left space-y-1 text-sm list-disc list-inside ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 <li>Design and UI</li>
                 <li>Class room management</li>
                 <li>Classroom dashboard</li>
@@ -310,21 +297,21 @@ export default function Home() {
               <img
                 src="/jishnu.png"
                 alt="Jishnu Kumar Bacchar"
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4"
+                className={`w-32 h-32 rounded-full object-cover border-4 shadow-md mb-4 ${isDarkMode ? "border-gray-600" : "border-white"}`}
               />
               <a
                 href="https://github.com/JishnuB2027"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mb-3 text-gray-700 hover:text-gray-900 transition-colors"
+                className={`mb-3 transition-colors ${isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
                 aria-label="Jishnu GitHub"
               >
                 <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
                 </svg>
               </a>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Jishnu Kumar Bacchar</h3>
-              <ul className="text-left text-gray-600 space-y-1 text-sm list-disc list-inside">
+              <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>Jishnu Kumar Bacchar</h3>
+              <ul className={`text-left space-y-1 text-sm list-disc list-inside ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 <li>Login and authentication</li>
                 <li>In class chat system</li>
                 <li>Grading system</li>
