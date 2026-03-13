@@ -59,7 +59,7 @@ import AnnouncementDetail from "./pages/student/AnnouncementDetail.jsx";
 import TimelineDemo from "./components/room/TimelineDemo.jsx";
 import PostLoginRedirect from "./components/PostLoginRedirect.jsx";
 import { useTheme } from "./contexts/ThemeContext.jsx";
-import YuvrajForms from "./pages/yuvraj_Forms.jsx";
+import FormsHub from "./pages/FormsHub.jsx";
 import HelpDesk from "./pages/HelpDesk.jsx";
 
 export default function App() {
@@ -146,7 +146,7 @@ export default function App() {
             <Route path="support-desk" element={<InstitutionSupportDesk />} />
 
                          {/* Forms */}
-             <Route path="forms" element={<YuvrajForms hideNavbar={true} />} />
+             <Route path="forms" element={<FormsHub hideNavbar={true} />} />
              
                          {/* Help Desk */}
              <Route path="helpdesk" element={<HelpDesk hideNavbar={true} />} />
@@ -290,7 +290,7 @@ export default function App() {
             path="/student/:idOrName/forms"
             element={
               <ProtectedRoute requiredRole="student">
-                <YuvrajForms />
+                <FormsHub />
               </ProtectedRoute>
             }
           />
@@ -310,7 +310,7 @@ export default function App() {
             path="/forms"
             element={
               <ProtectedRoute requiredRole="student">
-                <YuvrajForms />
+                <FormsHub />
               </ProtectedRoute>
             }
           />

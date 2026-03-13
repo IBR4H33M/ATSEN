@@ -4,7 +4,7 @@ import api from "../../lib/axios";
 import toast from "react-hot-toast";
 import CreateMaterial from "./CreateMaterial";
 import MaterialCard from "./MaterialCard";
-import YuvrajResources from "./yuvraj_Resources";
+import RoomResources from "./RoomResources";
 import { useAuth } from "../../contexts/AuthContext";
 
 const Materials = ({ roomId }) => {
@@ -126,7 +126,7 @@ const Materials = ({ roomId }) => {
       
                   {/* Resources Section */}
             <div className="mt-8 pt-8 border-t border-base-300">
-              <YuvrajResources roomId={roomId} user={user} />
+              <RoomResources roomId={roomId} user={user} />
             </div>
     </div>
   );

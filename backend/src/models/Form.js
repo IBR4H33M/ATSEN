@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const YuvrajPollSchema = new mongoose.Schema(
+const formSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
@@ -11,23 +11,19 @@ const YuvrajPollSchema = new mongoose.Schema(
         label: { type: String },
       },
     ],
-    // Custom evaluation questions
     customQuestions: [
       {
         type: { type: String, enum: ["slider", "multiple_choice", "text"] },
         question: { type: String },
         min: { type: Number },
         max: { type: Number },
-        options: [{ type: String }]
-      }
+        options: [{ type: String }],
+      },
     ],
-    // For evaluation - updated to use ObjectId for ATSEN2 consistency
     targetInstructorId: { type: mongoose.Schema.Types.ObjectId, ref: "Instructor" },
     targetInstructorName: { type: String },
-    // Institution filtering - adapted for ATSEN2 structure
     institutionId: { type: mongoose.Schema.Types.ObjectId, ref: "Institution", required: true },
     institutionSlug: { type: String },
-    // Scoping - updated to work with ATSEN2's room system
     createdFor: { type: String, enum: ["institution", "room", "global"], default: "institution" },
     targetRoomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -36,10 +32,9 @@ const YuvrajPollSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const YuvrajPollResponseSchema = new mongoose.Schema(
+const formResponseSchema = new mongoose.Schema(
   {
-    pollId: { type: mongoose.Schema.Types.ObjectId, ref: "YuvrajPoll", required: true },
-    // Updated to use ObjectId for ATSEN2 consistency
+    formId: { type: mongoose.Schema.Types.ObjectId, ref: "FormEntry", required: true },
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
     studentName: { type: String },
     optionId: { type: String },
@@ -48,24 +43,19 @@ const YuvrajPollResponseSchema = new mongoose.Schema(
     satisfactionLevel: { type: Number, min: 1, max: 10 },
     contentDeliveryRating: { type: Number, min: 1, max: 10 },
     recommendations: { type: String },
-    // Custom question responses
     customResponses: [
       {
         questionIndex: { type: Number },
         questionType: { type: String },
-        value: { type: mongoose.Schema.Types.Mixed } // Can be number for slider, string for text/multiple choice
-      }
-    ]
+        value: { type: mongoose.Schema.Types.Mixed },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export const YuvrajPollResponse =
-  mongoose.models.YuvrajPollResponse ||
-  mongoose.model("YuvrajPollResponse", YuvrajPollResponseSchema);
+export const FormResponse = mongoose.models.FormResponse || mongoose.model("FormResponse", formResponseSchema);
 
-const YuvrajPoll =
-  mongoose.models.YuvrajPoll ||
-  mongoose.model("YuvrajPoll", YuvrajPollSchema);
+const FormEntry = mongoose.models.FormEntry || mongoose.model("FormEntry", formSchema);
 
-export default YuvrajPoll;
+export default FormEntry;

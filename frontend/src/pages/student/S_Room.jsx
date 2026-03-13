@@ -21,7 +21,7 @@ import StudentAssessment from "../../components/room/StudentAssessment";
 import StudentGrades from "../../components/room/StudentGrades";
 import CourseTimeline from "../../components/room/CourseTimeline";
 import RoomStandings from "../../components/room/RoomStandings";
-import YuvrajForms from "../yuvraj_Forms";
+import FormsHub from "../FormsHub";
 
 
 const S_Room = () => {
@@ -362,7 +362,7 @@ const S_Room = () => {
 
               {activeTab === "standings" && <RoomStandings roomId={id} />}
 
-              {activeTab === "forms" && <YuvrajForms hideNavbar={true} />}
+              {activeTab === "forms" && <FormsHub hideNavbar={true} />}
               
 
             </div>
