@@ -768,7 +768,7 @@ export default function EditRoom() {
                         }}
                         className={`p-3 cursor-pointer hover:bg-base-200 border-b border-base-300 last:border-b-0 ${
                           selectedStudent?._id === student._id
-                            ? "bg-green-50"
+                            ? "bg-success/10"
                             : ""
                         }`}
                       >
@@ -788,8 +788,8 @@ export default function EditRoom() {
             {/* Selected Student Display and Section Selection */}
             {selectedStudent && (
               <div className="mt-4 space-y-4">
-                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <span className="text-green-800">
+                <div className="p-3 bg-success/10 border border-success/30 rounded-lg">
+                  <span className="text-base-content">
                     Selected: <strong>{selectedStudent.name}</strong> (
                     {selectedStudent.email})
                   </span>
@@ -813,7 +813,7 @@ export default function EditRoom() {
                             selectedStudentSections.includes(
                               section.sectionNumber
                             )
-                              ? "border-green-500 bg-green-50"
+                              ? "border-success bg-success/10"
                               : "border-base-300 hover:border-green-300"
                           }`}
                         >
@@ -933,8 +933,8 @@ export default function EditRoom() {
 
                   {/* Student Section Edit Interface */}
                   {editingStudentId === student._id && (
-                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <h4 className="font-medium text-green-800 mb-3">
+                    <div className="mt-4 p-4 bg-success/10 border border-success/30 rounded-lg">
+                      <h4 className="font-medium text-base-content mb-3">
                         Edit Section Assignment for {student.name}
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -948,8 +948,8 @@ export default function EditRoom() {
                                 editStudentSections.includes(
                                   section.sectionNumber
                                 )
-                                  ? "border-green-500 bg-green-100"
-                                  : "border-gray-300 hover:border-green-300"
+                                  ? "border-success bg-success/20"
+                                  : "border-base-300 hover:border-green-300"
                               }`}
                             >
                               <div className="flex items-center gap-2">
@@ -970,7 +970,7 @@ export default function EditRoom() {
                                   Section {section.sectionNumber}
                                 </span>
                               </div>
-                              <div className="text-sm text-gray-600 mt-1">
+                              <div className="text-sm text-base-content/70 mt-1">
                                 {section.classTimings?.length || 0} class
                                 timing(s)
                               </div>
@@ -1046,7 +1046,7 @@ export default function EditRoom() {
                         }}
                         className={`p-3 cursor-pointer hover:bg-base-200 border-b border-base-300 last:border-b-0 ${
                           selectedInstructor?._id === instructor._id
-                            ? "bg-blue-50"
+                            ? "bg-primary/10"
                             : ""
                         }`}
                       >
@@ -1066,8 +1066,8 @@ export default function EditRoom() {
             {/* Selected Instructor Display and Section Selection */}
             {selectedInstructor && (
               <div className="mt-4 space-y-4">
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <span className="text-blue-800">
+                <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                  <span className="text-base-content">
                     Selected: <strong>{selectedInstructor.name}</strong> (
                     {selectedInstructor.email})
                   </span>
@@ -1091,7 +1091,7 @@ export default function EditRoom() {
                             selectedInstructorSections.includes(
                               section.sectionNumber
                             )
-                              ? "border-blue-500 bg-blue-50"
+                              ? "border-primary bg-primary/10"
                               : "border-base-300 hover:border-blue-300"
                           }`}
                         >
@@ -1213,8 +1213,8 @@ export default function EditRoom() {
 
                   {/* Instructor Section Edit Interface */}
                   {editingInstructorId === instructor._id && (
-                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <h4 className="font-medium text-blue-800 mb-3">
+                    <div className="mt-4 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+                      <h4 className="font-medium text-base-content mb-3">
                         Edit Section Assignments for {instructor.name}
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -1228,8 +1228,8 @@ export default function EditRoom() {
                                 editInstructorSections.includes(
                                   section.sectionNumber
                                 )
-                                  ? "border-blue-500 bg-blue-100"
-                                  : "border-gray-300 hover:border-blue-300"
+                                  ? "border-primary bg-primary/20"
+                                  : "border-base-300 hover:border-blue-300"
                               }`}
                             >
                               <div className="flex items-center gap-2">
@@ -1249,7 +1249,7 @@ export default function EditRoom() {
                                   Section {section.sectionNumber}
                                 </span>
                               </div>
-                              <div className="text-sm text-gray-600 mt-1">
+                              <div className="text-sm text-base-content/70 mt-1">
                                 {section.classTimings?.length || 0} class
                                 timing(s)
                               </div>
