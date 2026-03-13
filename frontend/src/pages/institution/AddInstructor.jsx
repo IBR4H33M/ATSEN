@@ -160,21 +160,21 @@ export default function AddInstructor() {
 
           {/* Selected Instructor Display */}
           {selectedInstructor && (
-            <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-purple-900">
+                  <h3 className="font-medium text-primary">
                     Selected Instructor
                   </h3>
-                  <p className="text-purple-700">{selectedInstructor.name}</p>
-                  <p className="text-sm text-purple-600">
+                  <p className="text-base-content">{selectedInstructor.name}</p>
+                  <p className="text-sm text-base-content/70">
                     {selectedInstructor.email}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedInstructor(null)}
-                  className="p-1 text-purple-400 hover:text-purple-600 hover:bg-purple-100 rounded"
+                  className="rounded p-1 text-primary/70 hover:bg-primary/10 hover:text-primary transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>

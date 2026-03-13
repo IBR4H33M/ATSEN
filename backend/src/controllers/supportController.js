@@ -62,7 +62,12 @@ export const createSupportTicket = async (req, res) => {
     }
 
     // Check if student is associated with this institution
-    if (!student.institutions.includes(institutionId)) {
+    const belongsToInstitution = (student.institutions || []).some((entry) => {
+      const ref = entry?.institution || entry;
+      return ref && String(ref) === String(institutionId);
+    });
+
+    if (!belongsToInstitution) {
       return res.status(403).json({ 
         message: "Student is not associated with this institution" 
       });

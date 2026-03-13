@@ -172,18 +172,18 @@ export default function AddStudent() {
 
           {/* Selected Student Display */}
           {selectedStudent && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="mb-6 p-4 rounded-lg border border-success/30 bg-success/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-green-900">
+                  <h3 className="font-medium text-success">
                     Selected Student
                   </h3>
-                  <p className="text-green-700">{selectedStudent.name}</p>
-                  <p className="text-sm text-green-600">
+                  <p className="text-base-content">{selectedStudent.name}</p>
+                  <p className="text-sm text-base-content/70">
                     {selectedStudent.email}
                   </p>
                   {selectedStudent.studentId && (
-                    <p className="text-sm text-green-600">
+                    <p className="text-sm text-base-content/70">
                       Student ID: {selectedStudent.studentId}
                     </p>
                   )}
@@ -191,7 +191,7 @@ export default function AddStudent() {
                 <button
                   type="button"
                   onClick={() => setSelectedStudent(null)}
-                  className="p-1 text-green-400 hover:text-green-600 hover:bg-green-100 rounded"
+                  className="rounded p-1 text-success/70 hover:bg-success/10 hover:text-success transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>

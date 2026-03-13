@@ -5,6 +5,12 @@ import Student from "../../models/student.js";
 import Instructor from "../../models/instructor.js";
 import { findInstitutionByIdOrName } from "./utils.js";
 
+function studentInstitutionMembershipFilter(instId) {
+  return {
+    $or: [{ institutions: instId }, { "institutions.institution": instId }],
+  };
+}
+
 export async function getInstitutionDashboard(req, res) {
   try {
     const { idOrName } = req.params;
@@ -30,8 +36,8 @@ export async function getInstitutionDashboard(req, res) {
     ] = await Promise.all([
       Room.countDocuments({ institution: instId }),
       Room.countDocuments({ institution: instId, active: true }),
-      Student.countDocuments({ institutions: instId }),
-      Student.countDocuments({ institutions: instId}),
+      Student.countDocuments(studentInstitutionMembershipFilter(instId)),
+      Student.countDocuments(studentInstitutionMembershipFilter(instId)),
       Instructor.countDocuments({ institutions: instId })
     ]);
 

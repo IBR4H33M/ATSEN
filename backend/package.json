@@ -8,6 +8,7 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "build": "echo 'Backend does not require build step'",
+    "migrate:student-institutions": "node migrations/migrate-student-institutions.js",
     "dev:all": "concurrently -n backend,frontend -c green,cyan \"npm:dev\" \"npm --prefix ../frontend run dev\"",
     "dev:all:open": "concurrently -n backend,frontend,browser -c green,cyan,magenta \"npm:dev\" \"npm --prefix ../frontend run dev\" \"wait-on http://localhost:5173 && open-cli http://localhost:5173\""
   },
