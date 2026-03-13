@@ -112,7 +112,7 @@ export default function InstitutionRooms() {
 
         <Link
           to={`/${encodeURIComponent(idOrName)}/add-room`}
-          className="flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium group"
+          className="btn btn-primary px-6 py-3 font-medium group"
         >
           <Plus className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
           Add Room
@@ -131,7 +131,7 @@ export default function InstitutionRooms() {
           </p>
           <Link
             to={`/${encodeURIComponent(idOrName)}/add-room`}
-            className="inline-flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            className="btn btn-primary inline-flex items-center px-6 py-3 font-medium"
           >
             <Plus className="h-5 w-5 mr-2" />
             Create First Room
@@ -162,7 +162,7 @@ export default function InstitutionRooms() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-base-content group-hover:text-blue-700 mb-2">
+                    <h3 className="text-xl font-bold text-base-content group-hover:text-blue-700 mb-2 leading-tight">
                       {room.room_name}
                     </h3>
 
@@ -200,14 +200,14 @@ export default function InstitutionRooms() {
                     to={`/${encodeURIComponent(idOrName)}/rooms/${
                       room._id
                     }/edit`}
-                    className="flex-1 flex items-center justify-center px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm font-medium"
+                    className="btn btn-sm btn-outline btn-info flex-1"
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </Link>
                   <button
                     onClick={() => handleDeleteClick(room._id, room.room_name)}
-                    className="flex-1 flex items-center justify-center px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
+                    className="btn btn-sm btn-error flex-1"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete

@@ -16,6 +16,55 @@ import {
 import api from "../../lib/axios";
 import SectionManager from "../../components/SectionManager.jsx";
 
+// ── Toast notification ────────────────────────────────────────────────────────
+function Toast({ toast, onClose }) {
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(onClose, 3500);
+    return () => clearTimeout(t);
+  }, [toast, onClose]);
+
+  if (!toast) return null;
+
+  const colors = {
+    success: "alert-success",
+    error: "alert-error",
+    info: "alert-info",
+  };
+
+  return (
+    <div className="toast toast-top toast-center z-[9999]">
+      <div className={`alert ${colors[toast.type] ?? "alert-info"} shadow-lg flex flex-row items-center gap-3 max-w-sm w-max`}>
+        <span className="flex-1">{toast.message}</span>
+        <button className="btn btn-neutral btn-circle btn-xs shrink-0 text-neutral-content" onClick={onClose}>✕</button>
+      </div>
+    </div>
+  );
+}
+
+// ── Confirm modal ─────────────────────────────────────────────────────────────
+function ConfirmModal({ modal, onConfirm, onCancel }) {
+  if (!modal) return null;
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg text-base-content mb-2">{modal.title}</h3>
+        <p className="text-base-content/70">{modal.message}</p>
+        <div className="modal-action">
+          <button className="btn btn-neutral text-neutral-content" onClick={onCancel}>Cancel</button>
+          <button
+            className={`btn ${modal.danger ? "btn-error text-error-content" : "btn-primary text-primary-content"}`}
+            onClick={onConfirm}
+          >
+            {modal.confirmLabel ?? "Confirm"}
+          </button>
+        </div>
+      </div>
+      <div className="modal-backdrop" onClick={onCancel} />
+    </div>
+  );
+}
+
 export default function EditRoom() {
   const { idOrName, roomId } = useParams();
   const [room, setRoom] = useState(null);
@@ -27,6 +76,11 @@ export default function EditRoom() {
   const [instructorResults, setInstructorResults] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
+
+  // Toast + confirm modal state
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
+  const showToast = (message, type = "info") => setToast({ message, type });
 
   // Section selection states for assignment
   const [selectedStudentSections, setSelectedStudentSections] = useState([]);
@@ -97,62 +151,64 @@ export default function EditRoom() {
       });
   }, [idOrName, roomId]);
 
-  const handleRemoveStudent = async (studentId) => {
-    if (!confirm("Are you sure you want to remove this student from the room?"))
-      return;
-
-    try {
-      const res = await api.post(
-        `/institutions/${encodeURIComponent(idOrName)}/rooms/${roomId}/remove-student`,
-        { studentId }
-      );
-
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || `Status ${res.status}`);
-      }
-
-      setRoom((prev) => ({
-        ...prev,
-        students: prev.students.filter((s) => s._id !== studentId),
-      }));
-    } catch (err) {
-      console.error("Remove student failed:", err);
-      setError("Could not remove student from room.");
-    }
+  const handleRemoveStudent = (studentId) => {
+    setConfirmModal({
+      title: "Remove Student",
+      message: "Are you sure you want to remove this student from the room?",
+      danger: true,
+      confirmLabel: "Remove",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await api.post(
+            `/institutions/${encodeURIComponent(idOrName)}/rooms/${roomId}/remove-student`,
+            { studentId }
+          );
+          setRoom((prev) => ({
+            ...prev,
+            students: prev.students.filter((s) => s._id !== studentId),
+          }));
+          showToast("Student removed from room.", "success");
+        } catch (err) {
+          console.error("Remove student failed:", err);
+          showToast(
+            err.response?.data?.message || "Could not remove student from room.",
+            "error"
+          );
+        }
+      },
+    });
   };
 
-  const handleRemoveInstructor = async (instructorId) => {
-    if (
-      !confirm("Are you sure you want to remove this instructor from the room?")
-    )
-      return;
-
-    try {
-      const res = await fetch(
-        `/institutions/${encodeURIComponent(
-          idOrName
-        )}/rooms/${roomId}/remove-instructor`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ instructorId }),
+  const handleRemoveInstructor = (instructorId) => {
+    setConfirmModal({
+      title: "Remove Instructor",
+      message: "Are you sure you want to remove this instructor from the room?",
+      danger: true,
+      confirmLabel: "Remove",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await api.post(
+            `/institutions/${encodeURIComponent(
+              idOrName
+            )}/rooms/${roomId}/remove-instructor`,
+            { instructorId }
+          );
+          setRoom((prev) => ({
+            ...prev,
+            instructors: prev.instructors.filter((i) => i._id !== instructorId),
+          }));
+          showToast("Instructor removed from room.", "success");
+        } catch (err) {
+          console.error("Remove instructor failed:", err);
+          showToast(
+            err.response?.data?.message || "Could not remove instructor from room.",
+            "error"
+          );
         }
-      );
-
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || `Status ${res.status}`);
-      }
-
-      setRoom((prev) => ({
-        ...prev,
-        instructors: prev.instructors.filter((i) => i._id !== instructorId),
-      }));
-    } catch (err) {
-      console.error("Remove instructor failed:", err);
-      setError("Could not remove instructor from room.");
-    }
+      },
+    });
   };
 
   const searchStudents = async (query) => {
@@ -220,24 +276,15 @@ export default function EditRoom() {
     }
 
     try {
-      const res = await fetch(
+      await api.post(
         `/institutions/${encodeURIComponent(
           idOrName
         )}/rooms/${roomId}/assign-student-section`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            studentId: selectedStudent._id,
-            sectionNumber: selectedStudentSections[0],
-          }),
+          studentId: selectedStudent._id,
+          sectionNumber: selectedStudentSections[0],
         }
       );
-
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || `Status ${res.status}`);
-      }
 
       alert("Student assigned to section successfully!");
       setSelectedStudent(null);
@@ -247,7 +294,7 @@ export default function EditRoom() {
       refreshRoomData();
     } catch (err) {
       console.error("Assign student to section failed:", err);
-      alert("Error: " + err.message);
+      alert("Error: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -259,24 +306,15 @@ export default function EditRoom() {
     }
 
     try {
-      const res = await fetch(
+      await api.post(
         `/institutions/${encodeURIComponent(
           idOrName
         )}/rooms/${roomId}/assign-instructor-sections`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            instructorId: selectedInstructor._id,
-            sectionNumbers: selectedInstructorSections,
-          }),
+          instructorId: selectedInstructor._id,
+          sectionNumbers: selectedInstructorSections,
         }
       );
-
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || `Status ${res.status}`);
-      }
 
       alert("Instructor assigned to sections successfully!");
       setSelectedInstructor(null);
@@ -286,7 +324,7 @@ export default function EditRoom() {
       refreshRoomData();
     } catch (err) {
       console.error("Assign instructor to sections failed:", err);
-      alert("Error: " + err.message);
+      alert("Error: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -607,6 +645,13 @@ export default function EditRoom() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 mt-6">
+      <Toast toast={toast} onClose={() => setToast(null)} />
+      <ConfirmModal
+        modal={confirmModal}
+        onConfirm={() => confirmModal?.onConfirm?.()}
+        onCancel={() => setConfirmModal(null)}
+      />
+
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <Link

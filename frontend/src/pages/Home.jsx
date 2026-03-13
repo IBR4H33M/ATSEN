@@ -12,14 +12,6 @@ export default function Home() {
   const { isDarkMode } = useTheme();
   usePageTitle("Educational Management Platform for Institutions & Students");
 
-  const handleLogin = () => {
-    navigate("/auth/login");
-  };
-
-  const handleSignup = () => {
-    navigate("/auth/signup");
-  };
-
   const handleInstitutionRegister = () => {
     navigate("/auth/institution-register");
   };
