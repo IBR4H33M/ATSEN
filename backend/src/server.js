@@ -35,6 +35,7 @@ import roomResourcesRoutes from "./routes/roomResourcesRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import linkPreviewRoutes from "./routes/linkPreviewRoutes.js";
 import helpDeskRoutes from "./routes/helpDeskRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 dotenv.config();
 
@@ -180,6 +181,7 @@ app.use("/api/room-resources", roomResourcesRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/link-preview", linkPreviewRoutes);
 app.use("/api/helpdesk", helpDeskRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Production: Serve React app (MUST be after all API routes)
 if (process.env.NODE_ENV === 'production') {

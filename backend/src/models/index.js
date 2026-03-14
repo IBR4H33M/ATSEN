@@ -20,5 +20,6 @@ import "./ChatMessage.js";
 import "./RoomResource.js";
 import "./Form.js";
 import "./HelpDesk.js";
+import "./ContactMessage.js";
 
 console.log("All models imported and registered");

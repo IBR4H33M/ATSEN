@@ -61,6 +61,7 @@ import PostLoginRedirect from "./components/PostLoginRedirect.jsx";
 import { useTheme } from "./contexts/ThemeContext.jsx";
 import FormsHub from "./pages/FormsHub.jsx";
 import HelpDesk from "./pages/HelpDesk.jsx";
+import Contact from "./pages/Contact.jsx";
 
 export default function App() {
   const { theme } = useTheme();
@@ -71,6 +72,7 @@ export default function App() {
         <Routes>
           {/* 1. Home page */}
           <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
 
           {/* 2. Auth (login/signup) */}
           <Route path="/auth/login" element={<AuthLogin />} />
@@ -344,7 +346,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-6 text-base-content/50">
               <a href="/" className="hover:text-base-content transition-colors">Home</a>
-              <a href="mailto:support@atsen.app" className="hover:text-base-content transition-colors">Contact</a>
+              <a href="/contact" className="hover:text-base-content transition-colors">Contact</a>
               <a href="#" className="hover:text-base-content transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-base-content transition-colors">Terms</a>
             </div>

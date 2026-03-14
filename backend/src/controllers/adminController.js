@@ -8,10 +8,17 @@ import PendingInstitute from "../models/PendingInstitute.js";
 import Room from "../models/Room.js";
 import Student from "../models/student.js";
 import Instructor from "../models/instructor.js";
+import ContactMessage from "../models/ContactMessage.js";
 import mongoose from "mongoose";
 import { Redis } from '@upstash/redis';
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import fs from 'fs';
+
+function studentInstitutionMembershipFilter(instId) {
+  return {
+    $or: [{ institutions: instId }, { "institutions.institution": instId }],
+  };
+}
 
 // POST /api/admin/login
 export async function loginAdmin(req, res) {
@@ -199,7 +206,7 @@ export async function getAllInstitutions(req, res) {
       institutions.map(async (institution) => {
         const [roomCount, studentCount, instructorCount] = await Promise.all([
           Room.countDocuments({ institution: institution._id }),
-          Student.countDocuments({ institutions: institution._id }),
+          Student.countDocuments(studentInstitutionMembershipFilter(institution._id)),
           Instructor.countDocuments({ institutions: institution._id }),
         ]);
 
@@ -349,5 +356,36 @@ export async function setInstitutionActive(req, res) {
   } catch (err) {
     console.error('setInstitutionActive error:', err);
     return res.status(500).json({ message: 'Server error' });
+  }
+}
+
+// GET /api/admin/support-messages
+export async function getSupportMessages(req, res) {
+  try {
+    const messages = await ContactMessage.find({})
+      .select("name email message createdAt")
+      .sort({ createdAt: -1 });
+
+    return res.json(messages);
+  } catch (error) {
+    console.error("Error fetching support messages:", error);
+    return res.status(500).json({ message: "Failed to fetch support messages" });
+  }
+}
+
+// DELETE /api/admin/support-messages/:id
+export async function deleteSupportMessage(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deleted = await ContactMessage.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Support message not found" });
+    }
+
+    return res.json({ message: "Support message deleted" });
+  } catch (error) {
+    console.error("Error deleting support message:", error);
+    return res.status(500).json({ message: "Failed to delete support message" });
   }
 }

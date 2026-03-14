@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building, Clock, CheckCircle, XCircle, Calendar, Shield, Activity, AlertCircle } from "lucide-react";
+import { Building, Clock, CheckCircle, XCircle, Calendar, Shield, Activity, AlertCircle, Mail, Trash2 } from "lucide-react";
 import api from "../../lib/axios";
 import Navbar from "../../components/Navbar";
 
@@ -79,6 +79,7 @@ function RejectModal({ open, onConfirm, onCancel }) {
 export default function Dashboard() {
   const [institutions, setInstitutions] = useState([]);
   const [pendingInstitutions, setPendingInstitutions] = useState([]);
+  const [supportMessages, setSupportMessages] = useState([]);
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('pending');
@@ -104,14 +105,16 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [institutionsRes, pendingRes, systemRes] = await Promise.all([
+      const [institutionsRes, pendingRes, systemRes, supportMessagesRes] = await Promise.all([
         api.get("/admin/institutions"),
         api.get("/admin/institutions/pending"),
-        api.get("/admin/system-status")
+        api.get("/admin/system-status"),
+        api.get("/admin/support-messages"),
       ]);
       setInstitutions(institutionsRes.data);
       setPendingInstitutions(pendingRes.data);
       setSystemStatus(systemRes.data);
+      setSupportMessages(supportMessagesRes.data || []);
     } catch (error) {
       console.error("Error fetching data:", error);
       if (error.response?.status === 401) {
@@ -187,6 +190,26 @@ export default function Dashboard() {
         } catch (err) {
           console.error('Error toggling active state:', err);
           showToast("Failed to update institution state.", "error");
+        }
+      },
+    });
+  };
+
+  const handleDeleteSupportMessage = (id) => {
+    openConfirm({
+      title: "Delete Support Message",
+      message: "Are you sure you want to delete this support message?",
+      danger: true,
+      confirmLabel: "Delete",
+      onConfirm: async () => {
+        closeConfirm();
+        try {
+          await api.delete(`/admin/support-messages/${id}`);
+          showToast("Support message deleted.", "success");
+          fetchData();
+        } catch (err) {
+          console.error("Error deleting support message:", err);
+          showToast("Failed to delete support message.", "error");
         }
       },
     });
@@ -407,6 +430,65 @@ export default function Dashboard() {
                   ))}
                 </div>
               )}
+
+              <div className="mt-10 border-t border-base-300 pt-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center">
+                    <Mail className="h-6 w-6 text-primary mr-3" />
+                    <h2 className="text-xl font-semibold text-base-content">
+                      Support Messages
+                    </h2>
+                  </div>
+                  <div className="text-sm text-base-content/70">
+                    {supportMessages.length} total
+                  </div>
+                </div>
+
+                {supportMessages.length === 0 ? (
+                  <div className="text-center py-10 rounded-lg border border-base-300 bg-base-200/50">
+                    <p className="text-base-content/60">No support messages yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {supportMessages.map((msg) => (
+                      <div
+                        key={msg._id}
+                        className="rounded-lg border border-base-300 bg-base-100 p-4"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-semibold text-base-content">{msg.name}</span>
+                              <span className="text-base-content/40">|</span>
+                              <a
+                                href={`mailto:${msg.email}`}
+                                className="text-sm text-primary hover:underline"
+                              >
+                                {msg.email}
+                              </a>
+                            </div>
+                            <p className="text-xs text-base-content/50 mt-1">
+                              {new Date(msg.createdAt).toLocaleString()}
+                            </p>
+                            <p className="mt-3 whitespace-pre-wrap text-sm text-base-content/80">
+                              {msg.message}
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={() => handleDeleteSupportMessage(msg._id)}
+                            className="btn btn-sm btn-error"
+                            title="Delete message"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </>
           ) : activeTab === 'total' ? (
             // Registered Institutions Tab
