@@ -1,5 +1,5 @@
 // src/pages/auth/InstitutionRegistration.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../lib/axios";
 import Navbar from "../../components/Navbar.jsx";
@@ -8,7 +8,6 @@ import { CheckCircle, HelpCircle } from "lucide-react";
 export default function InstitutionRegistration() {
   const [form, setForm] = useState({});
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
@@ -21,7 +20,6 @@ export default function InstitutionRegistration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
     setLoading(true);
 
     // Check if passwords match
@@ -32,13 +30,11 @@ export default function InstitutionRegistration() {
     }
 
     // Remove confirmPassword from form data before sending to API
-    const { confirmPassword, ...formData } = form;
+    const formData = { ...form };
+    delete formData.confirmPassword;
 
     try {
       await api.post("/institutions/register", formData);
-      setSuccess(
-        "Registration requested successfully. Your institution details will be reviewed for approval."
-      );
       setForm({});
       setShowSuccessPopup(true);
 
