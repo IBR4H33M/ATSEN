@@ -251,6 +251,7 @@ export default function Home() {
                 <li>URL routing</li>
                 <li>Access control management</li>
                 <li>Super admin management</li>
+                <li>Storage system management for uploaded resources</li>
                 <li>Hosting and deployment</li>
                 <li>Search engine optimization</li>
               </ul>
@@ -281,6 +282,9 @@ export default function Home() {
                 <li>Classroom dashboard</li>
                 <li>Study resource management</li>
                 <li>Study timeline</li>
+                <li>Institution support desk</li>
+                <li>Institution Announcement System</li>
+                <li>Automated Class schedule system</li>
               </ul>
             </div>
 
@@ -307,6 +311,7 @@ export default function Home() {
                 <li>Login and authentication</li>
                 <li>In class chat system</li>
                 <li>Grading system</li>
+                <li>Document request system</li>
               </ul>
             </div>
           </div>
