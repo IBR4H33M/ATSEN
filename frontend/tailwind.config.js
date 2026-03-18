@@ -12,6 +12,8 @@ export default {
       {
         nord: {
           primary: "#0ea5e9",
+          success: "#0284C7",
+          "success-content": "#ffffff",
           secondary: "#f472b6",
           accent: "#37cdbe",
           neutral: "#3d4451",
