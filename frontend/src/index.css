@@ -1,3 +1,15 @@
+/* Import BrigtenRegular font */
+@font-face {
+  font-family: 'TorontoRegular';
+  src: url('/Toronto-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html, body {
+  font-family: 'TorontoRegular', system-ui, sans-serif !important;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

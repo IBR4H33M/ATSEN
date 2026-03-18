@@ -56,7 +56,10 @@ export default function Home() {
       {/* Hero Section */}
       <div className="relative">
         {/* Theme-aware background */}
-        <div className={`w-full h-[70vh] ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`} />
+        <div
+          className="w-full h-[70vh]"
+          style={{ backgroundColor: '#00638C' }}
+        />
 
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -64,23 +67,25 @@ export default function Home() {
             {/* Left Section */}
             <div className={user ? "flex-1" : "flex-1 pr-8"}>
               <div className="animate-fade-in-up">
-                <h1 className={`text-5xl lg:text-6xl font-bold mb-6 leading-tight ${isDarkMode ? "text-gray-100" : "text-gray-800"}`} style={{fontFamily: 'Consolas, monospace'}}>
-                  <span className={`font-extrabold ${isDarkMode ? "text-gray-100" : "text-gray-800"}`} style={{fontFamily: 'Consolas, monospace'}}>
-                    Welcome to ATSEN
-                  </span>
-                </h1>
-                <p className={`text-lg mt-4 font-light animate-fade-in-delayed-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-                  The comprehensive Learning Management System (LMS) for schools, colleges, and universities. Streamline student enrollment, course management, and academic administration.
-                </p>
+                <div className="text-center">
+                  <h1 className="text-5xl lg:text-6xl font-bold mb-4 leading-tight text-white">
+                    Education Evolved.<br />
+                    <span className="block mt-2 font-extrabold">Effortless Administration.</span>
+                  </h1>
+                  <p className="text-lg mt-4 font-light animate-fade-in-delayed-2 text-white/90">
+                    Atsen is the Comprehensive Learning Management System (LMS) for schools, colleges, and universities. ATSEN helps institutions streamline student enrollment, course management, and academic administration.
+                  </p>
+                </div>
                 
                 {/* Register Institution Button - Show for non-logged-in users */}
                 {!user && (
-                  <div className="mt-8 animate-fade-in-delayed-2">
+                  <div className="mt-8 animate-fade-in-delayed-2 flex justify-center">
                     <button
                       onClick={handleInstitutionRegister}
-                      className="btn btn-primary btn-lg py-4 px-8 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      className={`rounded-full px-8 py-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center ${isDarkMode ? 'bg-white text-gray-900 text-lg' : 'bg-white text-primary text-lg'}`}
+                      aria-label="Join Atsen"
                     >
-                      Register Your Institution
+                      Join Atsen
                     </button>
                   </div>
                 )}
@@ -117,11 +122,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-base-content mb-4">
-              What is ATSEN?
+              How does ATSEN help you?
             </h2>
-            <p className="text-xl text-base-content/70 max-w-3xl mx-auto">
-              ATSEN is a comprehensive Student Information System (SIS) and Learning Management System (LMS) for educational institutions, schools, and universities
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
