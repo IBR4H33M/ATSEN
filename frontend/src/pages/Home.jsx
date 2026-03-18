@@ -206,18 +206,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Call to Action */}
-          <div className="text-center mt-12">
-            <p className="text-lg text-base-content/70 mb-6">
-              Ready to modernize your educational institution?
-            </p>
-            <button
-              onClick={() => navigate("/auth/institution-register")}
-              className="btn btn-primary btn-lg py-4 px-8 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              Get Started Today
-            </button>
-          </div>
+          
         </div>
       </div>
 
@@ -314,6 +303,7 @@ export default function Home() {
                 <li>In class chat system</li>
                 <li>Grading system</li>
                 <li>Document request system</li>
+                <li>Video conference system</li>
               </ul>
             </div>
           </div>
