@@ -3,8 +3,10 @@ import { Mail, Send, ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import api from "../lib/axios";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function Contact() {
+  usePageTitle("Contact");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");

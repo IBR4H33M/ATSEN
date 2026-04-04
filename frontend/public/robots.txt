@@ -1,9 +1,9 @@
 User-agent: *
 Allow: /
-Allow: /login
-Allow: /signup
-Allow: /institution/register
-Allow: /help
+Allow: /contact
+Allow: /auth/login
+Allow: /auth/signup
+Allow: /auth/institution-register
 
 Disallow: /admin/
 Disallow: /student/
