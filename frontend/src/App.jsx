@@ -87,11 +87,12 @@ export default function App() {
             element={<InstitutionRegistration />}
           />
 
-          {/* 3. Legacy redirect for old login path */}
+          {/* 3. Legacy redirects for old public paths */}
           <Route
             path="/login"
             element={<Navigate to="/auth/login" replace />}
           />
+
 
           {/* 4. Admin */}
           <Route path="/admin/login" element={<Login />} />
